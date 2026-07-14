@@ -1,0 +1,11 @@
+# Fixture. Known answers: 'md-5' and 'ring' inventoried as libraries;
+# md-5 carries a note that it implements a broken hash.
+[package]
+name = "fixture"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+md-5 = "0.10"
+ring = "0.17"
+serde = "1.0"

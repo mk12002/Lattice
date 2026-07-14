@@ -1,0 +1,5 @@
+# Fixture. Known answers: 'cryptography' and 'pycrypto' inventoried as
+# libraries (priority none); pycrypto carries an unmaintained note.
+cryptography==42.0.5
+pycrypto==2.6.1
+requests==2.31.0
