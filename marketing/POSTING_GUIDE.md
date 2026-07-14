@@ -49,7 +49,10 @@ Target 5–7 per blog. All placeholders in the blogs are marked `[SCREENSHOT: �
 | Priority bar chart (Day 5 / Blog 1) | Data is in `docs/ACCURACY_NOTES.md`. Simplest: a quick matplotlib script or Napkin.ai from the table. |
 | Truth-table screenshot | `tests/test_severity.py` in your editor with a good theme, crop to the TRUTH_TABLE list. |
 | lattice.toml screenshot | The accept block from Blog 3 §Rule 5 in an editor. |
-| Hero/architecture diagram | Blueprint in `marketing/assets/lattice-architecture.svg` (committed); redraw in Excalidraw for the hand-drawn launch aesthetic if preferred. Playbook palette: services #89b4fa, data #a6e3a1, warnings #f9e2af, dark bg #1e1e2e. |
+| Hero/architecture diagram | `marketing/assets/lattice-architecture.svg` (committed, ready to attach); redraw in Excalidraw for the hand-drawn launch aesthetic if preferred. Playbook palette: services #89b4fa, data #a6e3a1, warnings #f9e2af, dark bg #1e1e2e. |
+| Scoring-model diagram | `marketing/assets/lattice-scoring-model.svg` — use for Day 3's thread and Blog 1's priority-flow visual (replaces the mermaid render if you prefer the styled look). |
+| HNDL timeline | `marketing/assets/hndl-timeline.svg` — use for Day 2's thread and Blog 2's `[VISUAL: timeline]` placeholder. |
+| Converting SVG → PNG for X/LinkedIn | Open the SVG in any browser → screenshot at 2x, or use Inkscape/`rsvg-convert`. X compresses SVGs poorly; always attach PNG. |
 | Blog cover images | Canva, 1600×840, dark minimal, title + one accent. One per blog, reused as OG image. |
 
 ## 3. Publishing each blog (Phase 5–6 checklist)

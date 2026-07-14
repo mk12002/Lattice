@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="tarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#cdd6f4"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="440" fill="#1e1e2e"/>
+  <text x="480" y="44" fill="#cdd6f4" font-size="24" font-weight="700" text-anchor="middle">Harvest now, decrypt later</text>
+  <text x="480" y="68" fill="#7f849c" font-size="13" text-anchor="middle">why the breach window opens when recording starts — not when a quantum computer arrives</text>
+
+  <!-- timeline axis -->
+  <line x1="70" y1="250" x2="900" y2="250" stroke="#cdd6f4" stroke-width="2.5" marker-end="url(#tarr)"/>
+  <text x="908" y="238" fill="#7f849c" font-size="12" text-anchor="start"></text>
+
+  <!-- Event 1: today -->
+  <circle cx="160" cy="250" r="7" fill="#f38ba8"/>
+  <line x1="160" y1="250" x2="160" y2="150" stroke="#45475a" stroke-width="1.5"/>
+  <rect x="70" y="96" width="180" height="56" rx="8" fill="#313244" stroke="#f38ba8"/>
+  <text x="160" y="119" fill="#f38ba8" font-size="13.5" font-weight="700" text-anchor="middle">TODAY</text>
+  <text x="160" y="138" fill="#cdd6f4" font-size="11.5" text-anchor="middle">adversary records ciphertext</text>
+  <text x="160" y="280" fill="#a6adc8" font-size="11.5" text-anchor="middle">RSA / ECDH key exchange</text>
+  <text x="160" y="296" fill="#a6adc8" font-size="11.5" text-anchor="middle">protects the traffic</text>
+
+  <!-- Event 2: standards -->
+  <circle cx="360" cy="250" r="7" fill="#a6e3a1"/>
+  <line x1="360" y1="250" x2="360" y2="170" stroke="#45475a" stroke-width="1.5"/>
+  <rect x="270" y="116" width="180" height="56" rx="8" fill="#313244" stroke="#a6e3a1"/>
+  <text x="360" y="139" fill="#a6e3a1" font-size="13.5" font-weight="700" text-anchor="middle">2024 — done</text>
+  <text x="360" y="158" fill="#cdd6f4" font-size="11.5" text-anchor="middle">NIST standardizes ML-KEM / ML-DSA</text>
+  <text x="360" y="280" fill="#a6adc8" font-size="11.5" text-anchor="middle">the replacements exist;</text>
+  <text x="360" y="296" fill="#a6adc8" font-size="11.5" text-anchor="middle">migration can start</text>
+
+  <!-- Migration band -->
+  <rect x="360" y="228" width="330" height="44" rx="6" fill="#f9e2af" fill-opacity="0.13" stroke="#f9e2af" stroke-dasharray="5 4"/>
+  <text x="525" y="222" fill="#f9e2af" font-size="12" font-weight="700" text-anchor="middle">the migration decade (historical base rate: 10–15 years)</text>
+
+  <!-- Event 3: mandates -->
+  <circle cx="690" cy="250" r="7" fill="#f9e2af"/>
+  <line x1="690" y1="250" x2="690" y2="150" stroke="#45475a" stroke-width="1.5"/>
+  <rect x="600" y="96" width="180" height="56" rx="8" fill="#313244" stroke="#f9e2af"/>
+  <text x="690" y="119" fill="#f9e2af" font-size="13.5" font-weight="700" text-anchor="middle">~2030–2035</text>
+  <text x="690" y="138" fill="#cdd6f4" font-size="11.5" text-anchor="middle">government deadlines (CNSA 2.0: 2033)</text>
+
+  <!-- Event 4: Q-day -->
+  <circle cx="850" cy="250" r="9" fill="#f38ba8"/>
+  <line x1="850" y1="250" x2="850" y2="170" stroke="#45475a" stroke-width="1.5"/>
+  <rect x="760" y="116" width="180" height="56" rx="8" fill="#f38ba8" fill-opacity="0.16" stroke="#f38ba8"/>
+  <text x="850" y="139" fill="#f38ba8" font-size="13.5" font-weight="700" text-anchor="middle">Q-DAY (year unknown)</text>
+  <text x="850" y="158" fill="#cdd6f4" font-size="11.5" text-anchor="middle">recorded ciphertext opens</text>
+  <text x="850" y="280" fill="#a6adc8" font-size="11.5" text-anchor="middle">Shor's algorithm breaks the</text>
+  <text x="850" y="296" fill="#a6adc8" font-size="11.5" text-anchor="middle">recorded key exchange</text>
+
+  <!-- shelf-life band -->
+  <rect x="160" y="330" width="690" height="40" rx="6" fill="#f38ba8" fill-opacity="0.12" stroke="#f38ba8"/>
+  <text x="505" y="355" fill="#f38ba8" font-size="13" font-weight="700" text-anchor="middle">shelf life of long-lived data — health records, legal files, source code, state secrets (25+ years)</text>
+  <text x="505" y="392" fill="#cdd6f4" font-size="13" text-anchor="middle">if the data still matters at Q-day, the breach effectively happened at recording time</text>
+  <text x="505" y="416" fill="#7f849c" font-size="12" text-anchor="middle">→ urgency is set by your data's shelf life, not by quantum hardware headlines</text>
+</svg>

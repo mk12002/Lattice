@@ -5,6 +5,11 @@ produces a Cryptographic Bill of Materials (CBOM), grades every cryptographic us
 vulnerability and classical weakness, and emits a prioritized migration roadmap toward the NIST
 post-quantum standards.
 
+*New here? Start with the plain-language walkthrough:
+[docs/PROJECT_EXPLAINED.md](docs/PROJECT_EXPLAINED.md).*
+
+![How a scan works](marketing/assets/lattice-architecture.svg)
+
 **The post-quantum threat in three sentences.** Adversaries can record encrypted traffic today
 and decrypt it once a cryptographically relevant quantum computer exists — *harvest now, decrypt
 later*. Shor's algorithm breaks RSA, Diffie-Hellman, and all elliptic-curve cryptography
