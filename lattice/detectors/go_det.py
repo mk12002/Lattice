@@ -102,7 +102,7 @@ class GoDetector(Detector):
 
         triple_des = bool(_TRIPLE_DES.search(content))
 
-        for import_path, line in sorted(imports.items(), key=lambda kv: kv[1]):
+        for import_path, line_no in sorted(imports.items(), key=lambda kv: kv[1]):
             mapped = _IMPORT_MAP.get(import_path)
             if not mapped:
                 continue
@@ -118,10 +118,10 @@ class GoDetector(Detector):
             yield CryptoAsset(
                 algorithm=algorithm,
                 file_path=str(path),
-                line_number=line,
+                line_number=line_no,
                 detector=self.name,
                 confidence=Confidence.HIGH,
-                snippet=make_snippet(lines, line),
+                snippet=make_snippet(lines, line_no),
                 mode=asset_mode,
                 usage_family=family,
                 note=note,

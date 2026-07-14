@@ -195,10 +195,10 @@ class JavaScriptDetector(Detector):
             for m in _IMPORT.finditer(line_text):
                 package = (m.group(1) or m.group(2) or "").split("/")[0]
                 if package in _CRYPTO_PACKAGES:
-                    algorithm = _CRYPTO_PACKAGES[package]
-                    if algorithm:
+                    package_algorithm = _CRYPTO_PACKAGES[package]
+                    if package_algorithm:
                         yield from emit(
-                            i, algorithm, note=f"imported package '{package}'"
+                            i, package_algorithm, note=f"imported package '{package}'"
                         )
                     else:
                         yield from emit(

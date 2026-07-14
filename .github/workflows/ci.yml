@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Type-check
+        run: mypy lattice
+      - name: Test
+        run: pytest --cov=lattice --cov-report=term-missing
+      - name: Dogfood - scan our own fixtures and require the P0 gate to trip
+        run: |
+          set +e
+          lattice scan tests/fixtures --format all --out /tmp/lattice-report --fail-on P0
+          code=$?
+          set -e
+          if [ "$code" -ne 1 ]; then
+            echo "expected exit 1 from --fail-on P0 on the fixtures, got $code"
+            exit 1
+          fi
+          test -s /tmp/lattice-report/cbom.json
+          test -s /tmp/lattice-report/report.html
+          test -s /tmp/lattice-report/findings.sarif
+      - name: Dogfood - clean fixture passes the gate
+        run: lattice scan tests/fixtures/python/safe_crypto.py --format cbom --out /tmp/clean --fail-on P0 --quiet

@@ -141,9 +141,9 @@ class CCppDetector(Detector):
                 if pattern.search(line_text):
                     yield from emit(i, algorithm, usage_family=family)
 
-            m = _EC_CURVE.search(line_text)
-            if m:
-                yield from emit(i, "ECDSA", curve=m.group(1))
+            curve_match = _EC_CURVE.search(line_text)
+            if curve_match:
+                yield from emit(i, "ECDSA", curve=curve_match.group(1))
 
             for pattern, (algorithm, family) in _LIBSODIUM.items():
                 if pattern.search(line_text):

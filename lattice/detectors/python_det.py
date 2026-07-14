@@ -159,8 +159,12 @@ class _Scanner:
                     return arg.value * 8
             if dotted.endswith(".generate_key"):
                 for kw in node.keywords:
-                    if kw.arg == "bit_length" and isinstance(kw.value, ast.Constant):
-                        return int(kw.value.value)
+                    if (
+                        kw.arg == "bit_length"
+                        and isinstance(kw.value, ast.Constant)
+                        and isinstance(kw.value.value, int)
+                    ):
+                        return kw.value.value
                 if "ChaCha20Poly1305" in dotted:
                     return 256
         return None
@@ -314,8 +318,12 @@ class _Scanner:
         if dotted.endswith("rsa.generate_private_key"):
             key_size = None
             for kw in node.keywords:
-                if kw.arg == "key_size" and isinstance(kw.value, ast.Constant):
-                    key_size = int(kw.value.value)
+                if (
+                    kw.arg == "key_size"
+                    and isinstance(kw.value, ast.Constant)
+                    and isinstance(kw.value.value, int)
+                ):
+                    key_size = kw.value.value
             yield from self._emit(node, "RSA", key_size=key_size)
             return
         if dotted.endswith("dsa.generate_private_key"):

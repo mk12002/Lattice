@@ -10,10 +10,10 @@ Design rules:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 
 
-class Confidence(str, Enum):
+class Confidence(StrEnum):
     """How certain the detector is that the matched pattern is real crypto usage.
 
     AST-level matches in a parsed language are HIGH; regex matches in dynamic
@@ -25,7 +25,7 @@ class Confidence(str, Enum):
     LOW = "low"
 
 
-class Family(str, Enum):
+class Family(StrEnum):
     """Cryptographic family of an asset (drives the HNDL heuristic)."""
 
     SYMMETRIC_CIPHER = "symmetric-cipher"
@@ -41,7 +41,7 @@ class Family(str, Enum):
     LIBRARY = "library"          # crypto library declared in a dependency manifest
 
 
-class QuantumStatus(str, Enum):
+class QuantumStatus(StrEnum):
     """Quantum-computer exposure of an algorithm.
 
     BROKEN    -- Shor's algorithm defeats it (RSA, DSA, DH, ECC).
@@ -58,7 +58,7 @@ class QuantumStatus(str, Enum):
     NA = "n/a"
 
 
-class ClassicalStatus(str, Enum):
+class ClassicalStatus(StrEnum):
     """Classical (non-quantum) security status.
 
     BROKEN_USAGE marks a structurally unsafe *usage* (e.g. ECB mode) even
@@ -75,7 +75,7 @@ class ClassicalStatus(str, Enum):
     UNKNOWN = "unknown"
 
 
-class Priority(str, Enum):
+class Priority(StrEnum):
     """Migration priority. P0 is most urgent; NONE means compliant/informational."""
 
     P0 = "P0"
