@@ -16,7 +16,7 @@ mypy lattice
 ## Adding a language detector
 
 1. **Create `lattice/detectors/<lang>_det.py`** implementing the ABC in
-   [`lattice/detectors/base.py`](lattice/detectors/base.py):
+   [`lattice/detectors/base.py`](../lattice/detectors/base.py):
 
    ```python
    from collections.abc import Iterable

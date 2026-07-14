@@ -9,11 +9,13 @@ from __future__ import annotations
 from lattice.detectors.base import Detector
 from lattice.detectors.c_cpp_det import CCppDetector
 from lattice.detectors.config_det import ConfigDetector
+from lattice.detectors.csharp_det import CSharpDetector
 from lattice.detectors.dependency_det import DependencyDetector
 from lattice.detectors.go_det import GoDetector
 from lattice.detectors.java_det import JavaDetector
 from lattice.detectors.javascript_det import JavaScriptDetector
 from lattice.detectors.python_det import PythonDetector
+from lattice.detectors.rust_det import RustDetector
 
 #: --languages token -> detector class
 LANGUAGE_MAP: dict[str, type[Detector]] = {
@@ -22,6 +24,8 @@ LANGUAGE_MAP: dict[str, type[Detector]] = {
     "js": JavaScriptDetector,
     "go": GoDetector,
     "c": CCppDetector,
+    "rust": RustDetector,
+    "csharp": CSharpDetector,
     "config": ConfigDetector,
     "deps": DependencyDetector,
 }

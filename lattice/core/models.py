@@ -140,10 +140,16 @@ class Assessment:
 
 @dataclass(frozen=True)
 class Finding:
-    """A detected asset plus its assessment. The unit of all reports."""
+    """A detected asset plus its assessment. The unit of all reports.
+
+    ``accepted_reason`` is set when a ``lattice.toml`` acceptance matches:
+    the finding stays in every report (an inventory must stay complete) but
+    is excluded from the readiness score and the --fail-on gate.
+    """
 
     asset: CryptoAsset
     assessment: Assessment
+    accepted_reason: str | None = None
 
     def sort_key(self) -> tuple[int, str, int, str]:
         """Stable, deterministic ordering: priority, then path, line, algorithm."""
@@ -162,6 +168,7 @@ class ScanStats:
     files_scanned: int = 0
     files_skipped: int = 0
     skipped_reasons: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
 
 @dataclass

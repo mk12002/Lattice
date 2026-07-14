@@ -144,11 +144,21 @@ class JavaScriptDetector(Detector):
                 yield from self._cipher_assets(emit, i, m.group(1))
 
             for m in _CREATE_SIGN.finditer(line_text):
-                spec = m.group(1)  # e.g. "RSA-SHA256", "sha256" (implies RSA context)
+                spec = m.group(1)  # e.g. "RSA-SHA256", or just "sha256"
                 base = spec.split("-")[0]
                 info = lookup(base)
                 if info is not None:
-                    yield from emit(i, info.name, usage_family=Family.SIGNATURE)
+                    if info.family == Family.HASH:
+                        # createSign('sha256'): only the digest is named; the key
+                        # algorithm is chosen at runtime by the key object.
+                        yield from emit(
+                            i,
+                            info.name,
+                            usage_family=Family.HASH,
+                            note="digest for a signature; key algorithm determined at runtime",
+                        )
+                    else:
+                        yield from emit(i, info.name, usage_family=Family.SIGNATURE)
 
             for m in _GENERATE_KEYPAIR.finditer(line_text):
                 kind = m.group(1).lower()

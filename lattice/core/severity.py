@@ -174,11 +174,14 @@ def readiness_score(findings: list[Finding]) -> int:
 
     Formula: ``100 * (1 - sum(weight(priority)) / count(findings))`` with
     weights P0=1.0, P1=0.6, P2=0.3, P3=0.1, compliant=0. An empty scan (no
-    crypto found) scores 100 — there is nothing to migrate. The formula is
-    printed alongside the score in every report; it measures the severity-
-    weighted share of findings, not real-world breach likelihood.
+    crypto found) scores 100 — there is nothing to migrate. Findings marked
+    accepted in lattice.toml are excluded entirely (they are consciously
+    owned risks, and the acceptance reason is visible in every report). The
+    formula is printed alongside the score in every report; it measures the
+    severity-weighted share of findings, not real-world breach likelihood.
     """
-    if not findings:
+    active = [f for f in findings if f.accepted_reason is None]
+    if not active:
         return 100
-    penalty = sum(_SCORE_WEIGHTS[f.assessment.priority] for f in findings)
-    return round(100 * (1 - penalty / len(findings)))
+    penalty = sum(_SCORE_WEIGHTS[f.assessment.priority] for f in active)
+    return round(100 * (1 - penalty / len(active)))

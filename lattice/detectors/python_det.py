@@ -66,7 +66,7 @@ _PYCRYPTODOME_HASHES = {
 
 #: ssl module protocol constants worth flagging (below TLS 1.2)
 _SSL_PROTOCOL_ATTRS = {
-    "ssl.PROTOCOL_SSLv2": "SSL-3.0",
+    "ssl.PROTOCOL_SSLv2": "SSL-2.0",
     "ssl.PROTOCOL_SSLv3": "SSL-3.0",
     "ssl.PROTOCOL_TLSv1": "TLS-1.0",
     "ssl.PROTOCOL_TLSv1_1": "TLS-1.1",

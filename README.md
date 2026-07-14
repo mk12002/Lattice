@@ -27,12 +27,24 @@ with knowing what cryptography you actually have.
 
 Detectors: **Python** (AST-based), **Java/Kotlin** (JCA strings), **JavaScript/TypeScript**
 (node:crypto, WebCrypto), **Go** (import map), **C/C++** (OpenSSL/mbedTLS/libsodium),
+**Rust** (RustCrypto/openssl/ring), **C#/.NET** (System.Security.Cryptography),
 **config & key material** (PEM/certs/keystores/TLS configs), **dependency manifests**
 (requirements.txt, package.json, pom.xml, go.mod, Cargo.toml, and more).
 
+Beyond scanning, Lattice is built for the *lifecycle* of a migration:
+
+- **Accepted risks** (`lattice.toml`): suppress a finding *with a mandatory reason and
+  optional expiry* — it stays in the CBOM and the HTML report, marked, but stops tripping CI.
+  SARIF output carries standard `suppressions`, so code-scanning UIs handle it natively.
+- **Drift detection** (`lattice diff old.json new.json --fail-on-new P0`): because output is
+  deterministic, two CBOMs diff meaningfully — CI can block a PR that *introduces* weak
+  crypto without failing on pre-existing findings.
+- **Policy packs** (`--policy cnsa2`): evaluate findings against the CNSA 2.0 algorithm
+  suite, orthogonally to the severity model.
+
 Lattice is **defensive and offline**: it reads files locally, writes reports locally, makes no
 network calls, never attempts to break cryptography, and never writes key material into a
-report. See [THREAT_MODEL.md](THREAT_MODEL.md).
+report. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
 ## Install
 
@@ -84,9 +96,11 @@ lattice scan <path>
     --out DIR                        default: ./lattice-report
     --fail-on {P0,P1,P2,P3}          exit 1 if findings at/above threshold exist
     --exclude GLOB                   repeatable
-    --languages LIST                 e.g. py,java,js,go,c (config+deps always on)
+    --languages LIST                 py,java,js,go,c,rust,csharp (config+deps always on)
+    --policy cnsa2                   also gate on a compliance profile
     --max-file-bytes N               per-file size cap (default 1000000)
     --quiet
+lattice diff <baseline.json> <current.json> [--fail-on-new {P0,P1,P2,P3}]
 lattice rules list
 lattice version
 ```
@@ -136,7 +150,8 @@ could see; it is not a probability of compromise.
 Adding a language is one class implementing `lattice.detectors.base.Detector`
 (`applies_to` + `detect`), one fixture directory, and one test. Adding an algorithm is one
 entry in the knowledge base plus its synonyms and a truth-table row. Both are walked through in
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). For how Lattice compares to CBOMkit, Semgrep,
+CodeQL, and TLS scanners, see [docs/COMPARISON.md](docs/COMPARISON.md).
 
 ## Limitations (read this before trusting a report)
 

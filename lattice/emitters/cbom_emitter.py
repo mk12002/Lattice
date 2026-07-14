@@ -105,6 +105,11 @@ def _component(finding: Finding) -> dict:
         properties.append(
             {"name": "lattice:pqcReplacement", "value": assessment.pqc_replacement}
         )
+    if finding.accepted_reason is not None:
+        properties.append({"name": "lattice:accepted", "value": "true"})
+        properties.append(
+            {"name": "lattice:acceptedReason", "value": finding.accepted_reason}
+        )
     if asset.snippet:
         properties.append({"name": "lattice:snippet", "value": asset.snippet})
     if asset.note:
@@ -132,6 +137,10 @@ def emit(cbom: CBOM) -> str:
         "properties": [
             {"name": "lattice:readinessScore", "value": str(readiness_score(findings))},
             {"name": "lattice:summary", "value": summary},
+            {
+                "name": "lattice:accepted",
+                "value": str(sum(1 for f in findings if f.accepted_reason is not None)),
+            },
             {"name": "lattice:filesScanned", "value": str(cbom.stats.files_scanned)},
             {"name": "lattice:filesSkipped", "value": str(cbom.stats.files_skipped)},
         ],

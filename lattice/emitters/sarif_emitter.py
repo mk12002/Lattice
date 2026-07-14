@@ -57,7 +57,7 @@ def _message(finding: Finding) -> str:
 
 def _result(finding: Finding) -> dict:
     asset = finding.asset
-    return {
+    result = {
         "ruleId": _rule_id(finding),
         "level": _LEVELS[finding.assessment.priority],
         "message": {"text": _message(finding)},
@@ -78,6 +78,12 @@ def _result(finding: Finding) -> dict:
             "detector": asset.detector,
         },
     }
+    if finding.accepted_reason is not None:
+        # SARIF-standard suppression: code-scanning UIs hide these by default
+        result["suppressions"] = [
+            {"kind": "external", "justification": finding.accepted_reason}
+        ]
+    return result
 
 
 def emit(cbom: CBOM) -> str:

@@ -265,8 +265,9 @@ class ConfigDetector(Detector):
                 m = pattern.match(line_text)
                 if m:
                     for token in m.group(1).split():
-                        if token.startswith(("-", "!", "+")):
-                            continue  # Apache exclusion/addition syntax
+                        if token.startswith(("-", "!")):
+                            continue  # Apache exclusion syntax: protocol disabled
+                        token = token.removeprefix("+")  # "+TLSv1" enables it
                         if token.lower() == "all":
                             continue
                         protocols.append(token)

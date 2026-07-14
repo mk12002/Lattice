@@ -3,13 +3,16 @@
 Contract:
     lattice scan <path> [--format cbom|html|sarif|all] [--out DIR]
                         [--fail-on P0|P1|P2|P3] [--exclude GLOB]...
-                        [--languages py,java,js,go,c] [--quiet]
+                        [--languages py,java,js,go,c,rust,csharp]
+                        [--policy cnsa2] [--quiet]
+    lattice diff <baseline.json> <current.json> [--fail-on-new P0|P1|P2|P3]
     lattice rules list
     lattice version
 
-Exit codes: 0 = success; 1 = --fail-on threshold met; 2 = usage error.
-A malformed input file never crashes a scan — it is skipped with a warning
-that appears in the scan summary.
+Exit codes: 0 = success; 1 = --fail-on / --policy / --fail-on-new gate met;
+2 = usage error. A malformed input file never crashes a scan — it is
+skipped with a warning that appears in the scan summary. Findings accepted
+in lattice.toml never trip a gate.
 """
 
 from __future__ import annotations
@@ -58,7 +61,12 @@ def build_parser() -> argparse.ArgumentParser:
     scan_parser.add_argument(
         "--languages",
         metavar="LIST",
-        help="comma-separated detector selection: py,java,js,go,c (default: all)",
+        help="comma-separated detector selection: py,java,js,go,c,rust,csharp (default: all)",
+    )
+    scan_parser.add_argument(
+        "--policy",
+        choices=["cnsa2"],
+        help="also evaluate findings against a compliance profile; violations exit 1",
     )
     scan_parser.add_argument(
         "--max-file-bytes",
@@ -68,6 +76,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="per-file size cap in bytes (default: 1000000)",
     )
     scan_parser.add_argument("--quiet", action="store_true", help="suppress progress output")
+
+    diff_parser = sub.add_parser(
+        "diff", help="compare two CBOM JSON files and report cryptographic drift"
+    )
+    diff_parser.add_argument("baseline", help="baseline CBOM JSON (e.g. from main)")
+    diff_parser.add_argument("current", help="current CBOM JSON (e.g. from this branch)")
+    diff_parser.add_argument(
+        "--fail-on-new",
+        choices=["P0", "P1", "P2", "P3"],
+        metavar="{P0,P1,P2,P3}",
+        help="exit non-zero if new findings at or above this priority appeared",
+    )
 
     rules_parser = sub.add_parser("rules", help="knowledge-base commands")
     rules_sub = rules_parser.add_subparsers(dest="rules_command")
@@ -93,7 +113,32 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if args.command == "scan":
         return _run_scan(args)
+    if args.command == "diff":
+        return _run_diff(args)
     parser.print_help()
+    return 0
+
+
+def _run_diff(args: argparse.Namespace) -> int:
+    from pathlib import Path as _Path
+
+    from lattice.core.diff import CbomLoadError, diff, render_text
+    from lattice.core.models import Priority
+
+    try:
+        result = diff(_Path(args.baseline), _Path(args.current))
+    except CbomLoadError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    print(render_text(result), end="")
+    if args.fail_on_new:
+        regressions = result.new_at_or_above(Priority(args.fail_on_new))
+        if regressions:
+            print(
+                f"drift gate: {regressions} new finding(s) at or above {args.fail_on_new}",
+                file=sys.stderr,
+            )
+            return 1
     return 0
 
 
@@ -140,19 +185,43 @@ def _run_scan(args: argparse.Namespace) -> int:
 
     if not args.quiet:
         _print_summary(cbom)
+    for warning in cbom.stats.warnings:
+        print(f"warning: {warning}", file=sys.stderr)
+
+    exit_code = 0
+    if args.policy:
+        from lattice.core.policy import POLICIES
+
+        policy = POLICIES[args.policy]
+        violations = policy.evaluate(cbom.sorted_findings())
+        if violations:
+            print(
+                f"policy {policy.name}: {len(violations)} algorithm(s) outside the "
+                "allowed set",
+                file=sys.stderr,
+            )
+            for violation in violations:
+                print(f"  - {violation.message}", file=sys.stderr)
+            print(f"  note: {policy.caveat}", file=sys.stderr)
+            exit_code = 1
+        elif not args.quiet:
+            print(f"policy {policy.name}: no detected algorithm outside the allowed set")
+            print(f"  note: {policy.caveat}")
 
     if args.fail_on:
         threshold = Priority(args.fail_on).rank
         gated = sum(
-            1 for f in cbom.findings if f.assessment.priority.rank <= threshold
+            1
+            for f in cbom.findings
+            if f.accepted_reason is None and f.assessment.priority.rank <= threshold
         )
         if gated:
             print(
                 f"fail-on gate: {gated} finding(s) at or above {args.fail_on}",
                 file=sys.stderr,
             )
-            return 1
-    return 0
+            exit_code = 1
+    return exit_code
 
 
 def _print_summary(cbom) -> None:

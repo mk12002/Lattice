@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lattice-scanner"
-version = "0.1.0"
+version = "0.2.0"
 description = "Crypto-agility and post-quantum-readiness scanner: builds a CBOM, grades quantum/classical risk, and emits a migration roadmap."
 readme = "README.md"
 requires-python = ">=3.11"

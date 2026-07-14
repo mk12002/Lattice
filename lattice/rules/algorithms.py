@@ -234,6 +234,15 @@ ALGORITHMS: dict[str, AlgorithmInfo] = dict(
             "Broken today independent of quantum computing.",
         ),
         _e(
+            "RC2",
+            _F.SYMMETRIC_CIPHER,
+            _Q.WEAKENED,
+            _C.DEPRECATED,
+            "AES-256",
+            "Legacy 64-bit-block cipher with known related-key attacks; deprecated "
+            "for new use.",
+        ),
+        _e(
             "BLOWFISH",
             _F.SYMMETRIC_CIPHER,
             _Q.WEAKENED,
@@ -317,6 +326,15 @@ ALGORITHMS: dict[str, AlgorithmInfo] = dict(
         # ------------------------------------------------------------------
         # Protocol versions (flagged by the config and language detectors).
         # ------------------------------------------------------------------
+        _e(
+            "SSL-2.0",
+            _F.PROTOCOL,
+            _Q.NA,
+            _C.BROKEN,
+            "TLS 1.2 or newer (prefer TLS 1.3)",
+            "Fundamentally broken handshake and integrity protection (DROWN class); "
+            "prohibited.",
+        ),
         _e(
             "SSL-3.0",
             _F.PROTOCOL,
@@ -524,6 +542,9 @@ SYNONYMS: dict[str, str] = {
     "blake2b": "BLAKE2",
     "blake2s": "BLAKE2",
     # Protocol versions
+    "sslv2": "SSL-2.0",
+    "ssl2": "SSL-2.0",
+    "sslv2.0": "SSL-2.0",
     "sslv3": "SSL-3.0",
     "ssl3": "SSL-3.0",
     "sslv3.0": "SSL-3.0",

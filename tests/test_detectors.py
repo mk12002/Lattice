@@ -215,6 +215,12 @@ def test_gate3_full_fixture_tree_has_no_false_negatives():
         ("server.key", "RSA", Priority.P0),
         ("id_ed25519.pub", "EDDSA", Priority.P1),
         ("requirements.txt", "pycrypto", Priority.NONE),
+        ("crypto_usage.rs", "MD5", Priority.P0),
+        ("crypto_usage.rs", "AES-128", Priority.P0),
+        ("crypto_usage.rs", "RSA", Priority.P0),
+        ("CryptoExamples.cs", "MD5", Priority.P0),
+        ("CryptoExamples.cs", "AES", Priority.P0),
+        ("CryptoExamples.cs", "RSA", Priority.P0),
     }
     missing = required - got
     assert not missing, f"false negatives: {sorted(missing)}"

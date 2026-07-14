@@ -13,8 +13,10 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_version(capsys):
+    from lattice import __version__
+
     assert main(["version"]) == 0
-    assert "lattice 0.1.0" in capsys.readouterr().out
+    assert f"lattice {__version__}" in capsys.readouterr().out
 
 
 def test_scan_all_formats(tmp_path, capsys):

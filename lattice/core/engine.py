@@ -41,7 +41,14 @@ def scan(
     exclude: tuple[str, ...] = (),
     max_bytes: int = DEFAULT_MAX_FILE_BYTES,
 ) -> CBOM:
-    """Scan ``target`` with ``detectors`` and return the assembled CBOM."""
+    """Scan ``target`` with ``detectors`` and return the assembled CBOM.
+
+    If a ``lattice.toml`` acceptance file exists at the scan root, matching
+    findings are marked accepted (they remain in the CBOM but leave the
+    readiness score and the --fail-on gate).
+    """
+    from lattice.core.suppress import apply_acceptances, load_acceptances
+
     target = target.resolve()
     walker = Walker(target, exclude=exclude, max_bytes=max_bytes)
     findings: list[Finding] = []
@@ -64,6 +71,10 @@ def scan(
                 )
                 continue
             findings.extend(make_finding(asset) for asset in assets)
+
+    acceptances, warnings = load_acceptances(root)
+    walker.stats.warnings.extend(warnings)
+    findings = apply_acceptances(findings, acceptances)
 
     cbom = CBOM(
         tool_version=__version__,
