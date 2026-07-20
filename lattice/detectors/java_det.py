@@ -16,7 +16,7 @@ from collections.abc import Iterable, Iterator
 from pathlib import PurePath
 
 from lattice.core.models import Confidence, CryptoAsset, Family
-from lattice.detectors.base import Detector, make_snippet
+from lattice.detectors.base import Detector, LineIndex, make_snippet
 from lattice.rules.algorithms import lookup
 
 #: JCA factory -> the usage family that call site pins
@@ -66,12 +66,13 @@ class JavaDetector(Detector):
 
     def detect(self, path: PurePath, content: str) -> Iterable[CryptoAsset]:
         lines = content.splitlines()
+        index = LineIndex(content)
         seen: set[tuple[int, str, str | None]] = set()
 
         for match in _GET_INSTANCE.finditer(content):
             factory = match.group(1)
             spec = match.group(2)
-            line = content.count("\n", 0, match.start()) + 1
+            line = index.line_of(match.start())
             for asset in self._assets_for(path, factory, spec, line, lines):
                 key = (asset.line_number, asset.algorithm, asset.mode)
                 if key not in seen:
@@ -80,7 +81,7 @@ class JavaDetector(Detector):
 
         bc = _BOUNCYCASTLE_IMPORT.search(content)
         if bc:
-            line = content.count("\n", 0, bc.start()) + 1
+            line = index.line_of(bc.start())
             yield CryptoAsset(
                 algorithm="BouncyCastle",
                 file_path=str(path),

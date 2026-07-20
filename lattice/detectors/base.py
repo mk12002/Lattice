@@ -8,6 +8,7 @@ testable and keeps I/O in one place.
 
 from __future__ import annotations
 
+import bisect
 import re
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
@@ -43,6 +44,25 @@ def make_snippet(lines: list[str], line_number: int) -> str:
     if len(snippet) > _MAX_SNIPPET:
         snippet = snippet[: _MAX_SNIPPET - 1] + "…"
     return snippet
+
+
+class LineIndex:
+    """Map string offsets to 1-based line numbers in O(log n) per lookup.
+
+    Regex detectors that match on the whole document and need each match's
+    line would otherwise call ``content.count("\\n", 0, offset)`` per match —
+    O(matches x length), quadratic on a hostile file crafted to contain many
+    matches. Precomputing newline offsets once and binary-searching keeps a
+    scan linear regardless of how adversarial the input is.
+    """
+
+    __slots__ = ("_newlines",)
+
+    def __init__(self, content: str) -> None:
+        self._newlines = [i for i, ch in enumerate(content) if ch == "\n"]
+
+    def line_of(self, offset: int) -> int:
+        return bisect.bisect_right(self._newlines, offset - 1) + 1
 
 
 class Detector(ABC):

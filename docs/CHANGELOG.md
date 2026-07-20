@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.2.1 — 2026-07-19 (security hardening)
+
+- **Symlinks are no longer followed.** A file symlink planted in a scanned tree could
+  previously be read (and redacted fragments quoted) even if it pointed outside the scan
+  root; such files are now skipped with a warning. Directory symlinks were already excluded.
+- **`lattice diff` hardened against hostile CBOMs.** The loader now totalizes over
+  malformed-but-valid JSON (non-list `components`, non-dict entries, wrong-typed `evidence`)
+  instead of raising, so a crafted file can't crash the drift gate.
+- **Quadratic line-counting removed.** Whole-document regex detectors use a new O(log n)
+  `LineIndex` (bisect over precomputed newline offsets) instead of counting newlines per
+  match — a file crafted with thousands of matches stays linear.
+- **CLI validation**: `--max-file-bytes` must be positive (a negative value silently skipped
+  every file).
+- **SECURITY.md** with the threat model, hardening table, and disclosure policy; **Bandit**
+  (SAST) and **pip-audit** added to CI and the `dev` extras; B105 skipped project-wide with a
+  documented rationale (algorithm-name literals are not secrets).
+- New `tests/test_security.py` (symlink exfiltration, malformed-CBOM fuzzing, linear-time
+  Java detection, CLI validation, end-to-end secret-leak checks).
+- README: status badges, real HTML-report screenshots (light + dark), and a styled terminal
+  SVG; `docs/PROJECT_EXPLAINED.md` gains a report screenshot.
+- 153 tests (151 pass, 2 Windows-skipped); ruff, mypy, and Bandit all clean.
+
 ## v0.2.0 — 2026-07-14
 
 - **Rust detector**: RustCrypto crates, the `openssl` crate (`Cipher::aes_128_ecb`,

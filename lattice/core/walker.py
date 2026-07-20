@@ -113,8 +113,19 @@ class Walker:
     # -- loading ----------------------------------------------------------------
 
     def _load(self, path: Path) -> str | None:
-        """Read a file defensively. Returns text, the binary sentinel, or None."""
+        """Read a file defensively. Returns text, the binary sentinel, or None.
+
+        Symlinked files are skipped outright: a hostile repository could
+        plant a symlink pointing outside the scan root (an SSH key, another
+        tenant's files) and the victim's scan would read it and quote
+        redacted fragments into a report. Not following file symlinks closes
+        that hole; directory symlinks are already excluded by
+        ``os.walk(followlinks=False)``.
+        """
         try:
+            if path.is_symlink():
+                self._skip(path, "symlink (not followed: may point outside the scan root)")
+                return None
             size = path.stat().st_size
             if size > self.max_bytes:
                 self._skip(path, f"exceeds size cap ({size} bytes)")

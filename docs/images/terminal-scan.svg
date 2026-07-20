@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="384" viewBox="0 0 880 384" font-family="ui-monospace, 'Cascadia Code', 'Consolas', monospace" font-size="14.5">
+  <rect width="880" height="384" rx="10" fill="#1e1e2e"/>
+  <!-- title bar -->
+  <rect width="880" height="34" rx="10" fill="#181825"/>
+  <rect y="20" width="880" height="14" fill="#181825"/>
+  <circle cx="22" cy="17" r="6" fill="#f38ba8"/>
+  <circle cx="44" cy="17" r="6" fill="#f9e2af"/>
+  <circle cx="66" cy="17" r="6" fill="#a6e3a1"/>
+  <text x="440" y="22" fill="#7f849c" font-size="12.5" text-anchor="middle">lattice — post-quantum readiness scan</text>
+
+  <text xml:space="preserve" x="20" y="66">
+    <tspan fill="#a6e3a1">$</tspan><tspan fill="#cdd6f4"> lattice scan . --format all --fail-on P0</tspan>
+  </text>
+
+  <text xml:space="preserve" x="20" y="94"><tspan fill="#cdd6f4">wrote report/cbom.json</tspan></text>
+  <text xml:space="preserve" x="20" y="116"><tspan fill="#cdd6f4">wrote report/report.html</tspan></text>
+  <text xml:space="preserve" x="20" y="138"><tspan fill="#cdd6f4">wrote report/findings.sarif</tspan></text>
+  <text xml:space="preserve" x="20" y="160"><tspan fill="#7f849c">scanned 4 files (0 skipped): 15 findings</tspan></text>
+
+  <text xml:space="preserve" x="20" y="192"><tspan fill="#cdd6f4">priorities:  </tspan><tspan fill="#f38ba8" font-weight="bold">P0=5</tspan><tspan fill="#cdd6f4">  </tspan><tspan fill="#fab387" font-weight="bold">P1=1</tspan><tspan fill="#cdd6f4">  </tspan><tspan fill="#f9e2af" font-weight="bold">P2=3</tspan><tspan fill="#cdd6f4">  </tspan><tspan fill="#7d9fc9" font-weight="bold">P3=1</tspan><tspan fill="#cdd6f4">  </tspan><tspan fill="#a6e3a1" font-weight="bold">none=5</tspan></text>
+
+  <!-- readiness bar -->
+  <text xml:space="preserve" x="20" y="222"><tspan fill="#cdd6f4">readiness score: </tspan><tspan fill="#f9e2af" font-weight="bold">56/100</tspan></text>
+  <rect x="20" y="234" width="560" height="12" rx="6" fill="#313244"/>
+  <rect x="20" y="234" width="314" height="12" rx="6" fill="#f9e2af"/>
+
+  <text xml:space="preserve" x="20" y="286"><tspan fill="#f38ba8" font-weight="bold">fail-on gate: 5 finding(s) at or above P0</tspan></text>
+
+  <text xml:space="preserve" x="20" y="318">
+    <tspan fill="#a6e3a1">$</tspan><tspan fill="#cdd6f4"> echo $?</tspan>
+  </text>
+  <text xml:space="preserve" x="20" y="340"><tspan fill="#f38ba8">1</tspan><tspan fill="#7f849c">   # CI blocks the merge — a P0 crypto finding is present</tspan></text>
+
+  <text xml:space="preserve" x="20" y="368"><tspan fill="#a6e3a1">$</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.7">▋</tspan></text>
+</svg>

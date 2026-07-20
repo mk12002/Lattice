@@ -41,6 +41,17 @@ after credibility is established and feeds the tool-builder audience from Days 8
 Target 5–7 per blog. All placeholders in the blogs are marked `[SCREENSHOT: …]` or
 `[VISUAL: …]`.
 
+**Ready-made assets already in the repo** (use directly or as-is; regenerate from a fresh
+scan when the tool changes):
+
+- `docs/images/report-light.png` and `docs/images/report-dark.png` — HTML report, both themes.
+- `docs/images/terminal-scan.svg` — styled `lattice scan` run with the fail-on gate.
+- `marketing/assets/lattice-architecture.svg`, `lattice-scoring-model.svg`, `hndl-timeline.svg`
+  — the three explainer diagrams.
+
+To regenerate the report screenshots after a change (headless Edge, Windows):
+`msedge --headless=new --screenshot=out.png --window-size=1180,1330 --force-device-scale-factor=2 file:///path/report.html`.
+
 | Asset | How |
 |---|---|
 | Terminal GIF of `lattice scan` | Windows Terminal + `terminalizer` or OBS→CapCut crop. Scan `tests/fixtures` — it's fast and shows P0s. Keep under 15 s. |

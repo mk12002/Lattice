@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lattice-scanner"
-version = "0.2.0"
+version = "0.2.1"
 description = "Crypto-agility and post-quantum-readiness scanner: builds a CBOM, grades quantum/classical risk, and emits a migration roadmap."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,6 +32,8 @@ dev = [
     "pytest-cov>=4.1",
     "ruff>=0.4",
     "mypy>=1.8",
+    "bandit>=1.7",
+    "pip-audit>=2.7",
 ]
 
 [project.scripts]
@@ -50,6 +52,13 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]
 ignore = ["E501"]
+
+[tool.bandit]
+# B105 (hardcoded_password_string) fires on algorithm-name string literals
+# like "DES" that this crypto-analysis tool compares constantly. Lattice
+# handles no credentials, tokens, or passwords anywhere (no network, no auth),
+# so B105 can have no true positive here. Skipped project-wide, by design.
+skips = ["B105"]
 
 [tool.mypy]
 python_version = "3.11"

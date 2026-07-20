@@ -291,6 +291,7 @@ class ConfigDetector(Detector):
                 suite = m.group(1).upper()
                 for token, algorithm in _WEAK_SUITE_TOKENS.items():
                     if token in suite and f"!{token}" not in suite:
+                        # "DES" is a cipher-suite algorithm name here, not a secret.
                         if token == "DES" and ("3DES" in suite or "DES-CBC3" in suite):
                             continue
                         yield CryptoAsset(

@@ -5,8 +5,19 @@ produces a Cryptographic Bill of Materials (CBOM), grades every cryptographic us
 vulnerability and classical weakness, and emits a prioritized migration roadmap toward the NIST
 post-quantum standards.
 
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
+![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
+![Runtime deps: 0](https://img.shields.io/badge/runtime%20deps-0-2d7a46)
+![Tests](https://img.shields.io/badge/tests-153-2d7a46)
+![Security: Bandit](https://img.shields.io/badge/security-bandit%20clean-2d7a46)
+![Languages: 9](https://img.shields.io/badge/detectors-9%20languages-8fb4d9)
+
 *New here? Start with the plain-language walkthrough:
 [docs/PROJECT_EXPLAINED.md](docs/PROJECT_EXPLAINED.md).*
+
+<p align="center">
+  <img src="docs/images/terminal-scan.svg" alt="lattice scan run: 15 findings, P0=5, readiness 56/100, fail-on P0 exits 1" width="760">
+</p>
 
 ![How a scan works](marketing/assets/lattice-architecture.svg)
 
@@ -92,6 +103,19 @@ The two P0s: an `hashlib.md5(...)` call (classically broken today) and an RSA-20
 generation (quantum-broken **and** harvest-now-decrypt-later exposed — remediation:
 ML-KEM per FIPS 203). The two compliant findings are AES-256-GCM and ChaCha20-Poly1305.
 Every finding carries its file, line, matched snippet, confidence, and justification.
+
+### The HTML report
+
+A single self-contained file (works offline, no CDN), with a CISO-readable executive summary,
+priority cards, the harvest-now-decrypt-later headline, and a full prioritized findings table.
+It renders in both light and dark themes:
+
+| Light | Dark |
+|:---:|:---:|
+| [![Lattice HTML report, light theme](docs/images/report-light.png)](docs/images/report-light.png) | [![Lattice HTML report, dark theme](docs/images/report-dark.png)](docs/images/report-dark.png) |
+
+*(Screenshots are the top band of a scan over a small demo repo — score, priority breakdown,
+HNDL exposure, and the start of the findings table.)*
 
 ## CLI reference
 
@@ -180,6 +204,17 @@ CodeQL, and TLS scanners, see [docs/COMPARISON.md](docs/COMPARISON.md).
   priority *none* and the note "usage not confirmed by a call site".
 - **`.gitignore` support is a subset** (literal names, `*` globs, directory patterns from the
   scan root; no negations, no nested files).
+
+## Security
+
+Lattice reads potentially hostile source trees, so its own hardening matters. It makes **no
+network calls**, executes nothing (files are parsed, never imported), skips symlinks so a
+planted link can't exfiltrate files from outside the scan root, caps per-file size, and never
+writes key material into a report. The code is scanned with **Bandit** (SAST) and **pip-audit**
+in CI, and the untrusted-input surfaces (symlinks, malformed CBOMs, pathological files, the DER
+parser) have dedicated regression tests in `tests/test_security.py`. Full policy, threat model,
+and how to report a vulnerability: [SECURITY.md](SECURITY.md) and
+[docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
 ## License
 

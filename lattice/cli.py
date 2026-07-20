@@ -152,6 +152,9 @@ def _run_scan(args: argparse.Namespace) -> int:
     if not target.exists():
         print(f"error: path not found: {target}", file=sys.stderr)
         return 2
+    if args.max_file_bytes <= 0:
+        print("error: --max-file-bytes must be a positive integer", file=sys.stderr)
+        return 2
 
     languages = None
     if args.languages:

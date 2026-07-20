@@ -464,7 +464,8 @@ class _Scanner:
         upper = value.upper()
         for token, algorithm in _CIPHER_SUITE_TOKENS.items():
             if algorithm and token in upper and f"!{token}" not in upper:
-                # "DES" would also match inside "3DES"/"DES-CBC3"; require exact-ish hit
+                # "DES" is a cipher-suite algorithm name here, not a secret;
+                # the guard avoids matching "DES" inside "3DES"/"DES-CBC3".
                 if token == "DES" and ("3DES" in upper or "DES-CBC3" in upper):
                     continue
                 yield from self._emit(

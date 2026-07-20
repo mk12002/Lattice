@@ -46,27 +46,55 @@ class DiffResult:
         )
 
 
+def _as_list(value: object) -> list:
+    """Return ``value`` if it is a list, else an empty list.
+
+    ``diff`` reads two JSON files that may be malformed or hostile. A crafted
+    document could set ``components`` to a string or ``properties`` to a
+    number; treating a non-list as empty keeps the parser total instead of
+    letting an AttributeError or an accidental character-iteration escape.
+    """
+    return value if isinstance(value, list) else []
+
+
+def _prop_map(component: object) -> dict[str, object]:
+    """Property name -> value for a component, tolerating malformed entries."""
+    result: dict[str, object] = {}
+    for prop in _as_list(component.get("properties") if isinstance(component, dict) else None):
+        if isinstance(prop, dict):
+            result[str(prop.get("name"))] = prop.get("value")
+    return result
+
+
+def _first_location(component: dict) -> str:
+    evidence = component.get("evidence")
+    occurrences = _as_list(evidence.get("occurrences") if isinstance(evidence, dict) else None)
+    for occurrence in occurrences:
+        if isinstance(occurrence, dict) and "location" in occurrence:
+            return str(occurrence.get("location", "?"))
+    return "?"
+
+
 def _load(path: Path) -> tuple[Counter[_Key], int | None]:
     try:
         doc = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
         raise CbomLoadError(f"{path}: not a readable CBOM JSON ({exc})") from exc
     if not isinstance(doc, dict) or doc.get("bomFormat") != "CycloneDX":
         raise CbomLoadError(f"{path}: missing CycloneDX bomFormat marker")
     keys: Counter[_Key] = Counter()
-    for component in doc.get("components", []):
-        properties = {
-            p.get("name"): p.get("value") for p in component.get("properties", [])
-        }
-        priority = properties.get("lattice:priority", Priority.NONE.value)
-        occurrences = component.get("evidence", {}).get("occurrences", [{}])
-        location = str(occurrences[0].get("location", "?")) if occurrences else "?"
-        keys[(str(component.get("name", "?")), location, str(priority))] += 1
+    for component in _as_list(doc.get("components")):
+        if not isinstance(component, dict):
+            continue
+        properties = _prop_map(component)
+        priority = str(properties.get("lattice:priority", Priority.NONE.value))
+        location = _first_location(component)
+        keys[(str(component.get("name", "?")), location, priority)] += 1
     score: int | None = None
-    for prop in doc.get("properties", []):
-        if prop.get("name") == "lattice:readinessScore":
+    for prop in _as_list(doc.get("properties")):
+        if isinstance(prop, dict) and prop.get("name") == "lattice:readinessScore":
             try:
-                score = int(prop.get("value"))
+                score = int(prop.get("value"))  # type: ignore[arg-type]
             except (TypeError, ValueError):
                 score = None
     return keys, score

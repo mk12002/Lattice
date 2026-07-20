@@ -33,6 +33,10 @@ every cryptographic thing it found, in three formats at once:
 | `report.html` | humans — a single self-contained page with an executive summary, works offline, light & dark mode |
 | `findings.sarif` | GitHub — findings appear inline on pull requests |
 
+The HTML report — one self-contained file, readable by a CISO, in light or dark theme:
+
+![Lattice HTML report](images/report-light.png)
+
 ![How a scan works](../marketing/assets/lattice-architecture.svg)
 
 ## 3. The core idea: not "is it safe?" but "what breaks first?"
