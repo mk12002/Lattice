@@ -12,9 +12,9 @@
   <!-- timeline axis -->
   <line x1="70" y1="250" x2="930" y2="250" stroke="#cdd6f4" stroke-width="2.5" marker-end="url(#tarr)"/>
 
-  <!-- Migration band (E2 dot -> E3 dot) -->
-  <rect x="380" y="228" width="240" height="44" rx="6" fill="#f9e2af" fill-opacity="0.13" stroke="#f9e2af" stroke-dasharray="5 4"/>
-  <text x="500" y="220" fill="#f9e2af" font-size="12" font-weight="700" text-anchor="middle">the migration decade — 10–15 years</text>
+  <!-- Migration band (E2 dot -> E3 dot); label sits inside, above the axis -->
+  <rect x="380" y="214" width="240" height="58" rx="6" fill="#f9e2af" fill-opacity="0.13" stroke="#f9e2af" stroke-dasharray="5 4"/>
+  <text x="500" y="234" fill="#f9e2af" font-size="11.5" font-weight="700" text-anchor="middle">the migration decade — 10–15 years</text>
 
   <!-- Event 1: today -->
   <line x1="150" y1="250" x2="150" y2="150" stroke="#45475a" stroke-width="1.5"/>
