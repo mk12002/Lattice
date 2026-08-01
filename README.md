@@ -8,9 +8,9 @@ post-quantum standards.
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Runtime deps: 0](https://img.shields.io/badge/runtime%20deps-0-2d7a46)
-![Tests](https://img.shields.io/badge/tests-153-2d7a46)
+![Tests](https://img.shields.io/badge/tests-171-2d7a46)
 ![Security: Bandit](https://img.shields.io/badge/security-bandit%20clean-2d7a46)
-![Languages: 9](https://img.shields.io/badge/detectors-9%20languages-8fb4d9)
+![Languages: 12](https://img.shields.io/badge/detectors-12%20languages-8fb4d9)
 
 *New here? Start with the plain-language walkthrough:
 [docs/PROJECT_EXPLAINED.md](docs/PROJECT_EXPLAINED.md).*
@@ -41,9 +41,11 @@ with knowing what cryptography you actually have.
   humans, and SARIF 2.1.0 for CI code-scanning UIs.
 - **Gates merges** — `--fail-on P0` exits non-zero when critical findings exist.
 
-Detectors: **Python** (AST-based), **Java/Kotlin** (JCA strings), **JavaScript/TypeScript**
-(node:crypto, WebCrypto), **Go** (import map), **C/C++** (OpenSSL/mbedTLS/libsodium),
-**Rust** (RustCrypto/openssl/ring), **C#/.NET** (System.Security.Cryptography),
+Detectors: **Python** (AST-based), **Java/Kotlin/Scala** (JCA strings),
+**JavaScript/TypeScript** (node:crypto, WebCrypto), **Go** (import map),
+**C/C++** (OpenSSL/mbedTLS/libsodium), **Rust** (RustCrypto/openssl/ring),
+**C#/.NET** (System.Security.Cryptography), **Ruby** (OpenSSL + gems),
+**PHP** (openssl_*/hash/Sodium), **Swift** (CryptoKit/CommonCrypto),
 **config & key material** (PEM/certs/keystores/TLS configs), **dependency manifests**
 (requirements.txt, package.json, pom.xml, go.mod, Cargo.toml, and more).
 
@@ -55,8 +57,11 @@ Beyond scanning, Lattice is built for the *lifecycle* of a migration:
 - **Drift detection** (`lattice diff old.json new.json --fail-on-new P0`): because output is
   deterministic, two CBOMs diff meaningfully — CI can block a PR that *introduces* weak
   crypto without failing on pre-existing findings.
-- **Policy packs** (`--policy cnsa2`): evaluate findings against the CNSA 2.0 algorithm
-  suite, orthogonally to the severity model.
+- **Policy packs** (`--policy cnsa2|cnsa1|fips140`): evaluate findings against a named
+  compliance suite (CNSA 2.0, the pre-quantum CNSA 1.0, or an illustrative FIPS-140
+  approved-algorithm set), orthogonally to the severity model.
+- **Config in the repo** (`lattice.toml` `[scan]`): set default `exclude`, `languages`,
+  `fail_on`, and `max_file_bytes` so CI jobs don't re-pass the same flags.
 
 Lattice is **defensive and offline**: it reads files locally, writes reports locally, makes no
 network calls, never attempts to break cryptography, and never writes key material into a
@@ -131,14 +136,22 @@ lattice scan <path>
     --out DIR                        default: ./lattice-report
     --fail-on {P0,P1,P2,P3}          exit 1 if findings at/above threshold exist
     --exclude GLOB                   repeatable
-    --languages LIST                 py,java,js,go,c,rust,csharp (config+deps always on)
-    --policy cnsa2                   also gate on a compliance profile
+    --languages LIST                 py,java,js,go,c,rust,csharp,ruby,php,swift
+                                     (config+deps always on)
+    --policy {cnsa2,cnsa1,fips140}   also gate on a compliance profile
     --max-file-bytes N               per-file size cap (default 1000000)
     --quiet
-lattice diff <baseline.json> <current.json> [--fail-on-new {P0,P1,P2,P3}]
+lattice diff <baseline.json> <current.json>
+    [--fail-on-new {P0,P1,P2,P3}]    exit 1 if NEW findings at/above threshold
+    [--format {text,json}]           default: text
+    [--out FILE]                     write drift report to FILE instead of stdout
 lattice rules list
 lattice version
 ```
+
+Scan defaults can also live in a `lattice.toml` `[scan]` table
+(`exclude`, `languages`, `fail_on`, `max_file_bytes`); CLI flags override it. The same file
+holds accepted-risk entries.
 
 Defaults: respects the scan root's `.gitignore`, skips vendored trees (`node_modules`,
 `vendor`, `.venv`, `target`, `dist`, `build`, …), skips binaries, caps file size. A malformed

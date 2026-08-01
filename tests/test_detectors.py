@@ -221,6 +221,16 @@ def test_gate3_full_fixture_tree_has_no_false_negatives():
         ("CryptoExamples.cs", "MD5", Priority.P0),
         ("CryptoExamples.cs", "AES", Priority.P0),
         ("CryptoExamples.cs", "RSA", Priority.P0),
+        ("crypto_usage.rb", "MD5", Priority.P0),
+        ("crypto_usage.rb", "AES-128", Priority.P0),
+        ("crypto_usage.rb", "RSA", Priority.P0),
+        ("crypto_usage.php", "SHA-1", Priority.P0),
+        ("crypto_usage.php", "AES-128", Priority.P0),
+        ("crypto_usage.php", "RSA", Priority.P0),
+        ("CryptoUsage.swift", "MD5", Priority.P0),
+        ("CryptoUsage.swift", "ECDH", Priority.P0),
+        ("CryptoExamples.kt", "MD5", Priority.P0),
+        ("CryptoExamples.kt", "RSA", Priority.P0),
     }
     missing = required - got
     assert not missing, f"false negatives: {sorted(missing)}"

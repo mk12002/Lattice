@@ -61,19 +61,22 @@ def build_parser() -> argparse.ArgumentParser:
     scan_parser.add_argument(
         "--languages",
         metavar="LIST",
-        help="comma-separated detector selection: py,java,js,go,c,rust,csharp (default: all)",
+        help=(
+            "comma-separated detector selection: "
+            "py,java,js,go,c,rust,csharp,ruby,php,swift (default: all)"
+        ),
     )
     scan_parser.add_argument(
         "--policy",
-        choices=["cnsa2"],
+        choices=["cnsa2", "cnsa1", "fips140"],
         help="also evaluate findings against a compliance profile; violations exit 1",
     )
     scan_parser.add_argument(
         "--max-file-bytes",
         type=int,
-        default=1_000_000,
+        default=None,
         metavar="N",
-        help="per-file size cap in bytes (default: 1000000)",
+        help="per-file size cap in bytes (default: 1000000; overrides lattice.toml [scan])",
     )
     scan_parser.add_argument("--quiet", action="store_true", help="suppress progress output")
 
@@ -87,6 +90,17 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["P0", "P1", "P2", "P3"],
         metavar="{P0,P1,P2,P3}",
         help="exit non-zero if new findings at or above this priority appeared",
+    )
+    diff_parser.add_argument(
+        "--format",
+        default="text",
+        choices=["text", "json"],
+        help="drift output format (default: text)",
+    )
+    diff_parser.add_argument(
+        "--out",
+        metavar="FILE",
+        help="write the drift report to FILE instead of stdout",
     )
 
     rules_parser = sub.add_parser("rules", help="knowledge-base commands")
@@ -122,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
 def _run_diff(args: argparse.Namespace) -> int:
     from pathlib import Path as _Path
 
-    from lattice.core.diff import CbomLoadError, diff, render_text
+    from lattice.core.diff import CbomLoadError, diff, render_json, render_text
     from lattice.core.models import Priority
 
     try:
@@ -130,7 +144,15 @@ def _run_diff(args: argparse.Namespace) -> int:
     except CbomLoadError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
-    print(render_text(result), end="")
+    rendered = render_json(result) if args.format == "json" else render_text(result)
+    if args.out:
+        out_path = _Path(args.out)
+        if out_path.parent != _Path():
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(rendered, encoding="utf-8", newline="\n")
+        print(f"wrote {out_path}")
+    else:
+        print(rendered, end="")
     if args.fail_on_new:
         regressions = result.new_at_or_above(Priority(args.fail_on_new))
         if regressions:
@@ -143,7 +165,8 @@ def _run_diff(args: argparse.Namespace) -> int:
 
 
 def _run_scan(args: argparse.Namespace) -> int:
-    from lattice.core.engine import scan
+    from lattice.core.config import load_scan_config
+    from lattice.core.engine import DEFAULT_MAX_FILE_BYTES, scan
     from lattice.core.models import Priority
     from lattice.detectors.registry import detectors_for
     from lattice.emitters import cbom_emitter, html_emitter, sarif_emitter
@@ -152,25 +175,42 @@ def _run_scan(args: argparse.Namespace) -> int:
     if not target.exists():
         print(f"error: path not found: {target}", file=sys.stderr)
         return 2
-    if args.max_file_bytes <= 0:
+    if args.max_file_bytes is not None and args.max_file_bytes <= 0:
         print("error: --max-file-bytes must be a positive integer", file=sys.stderr)
         return 2
+
+    # lattice.toml [scan] defaults: CLI flags win, then the file, then built-ins.
+    config_root = target if target.is_dir() else target.parent
+    scan_config, config_warnings = load_scan_config(config_root)
 
     languages = None
     if args.languages:
         languages = [token.strip() for token in args.languages.split(",") if token.strip()]
+    elif scan_config.languages:
+        languages = scan_config.languages
     try:
         detectors = detectors_for(languages)
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
+    exclude = tuple(args.exclude) if args.exclude else tuple(scan_config.exclude)
+    max_bytes = (
+        args.max_file_bytes
+        if args.max_file_bytes is not None
+        else scan_config.max_file_bytes
+        if scan_config.max_file_bytes is not None
+        else DEFAULT_MAX_FILE_BYTES
+    )
+    fail_on = args.fail_on or scan_config.fail_on
+
     cbom = scan(
         target,
         detectors,
-        exclude=tuple(args.exclude),
-        max_bytes=args.max_file_bytes,
+        exclude=exclude,
+        max_bytes=max_bytes,
     )
+    cbom.stats.warnings.extend(config_warnings)
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -211,8 +251,8 @@ def _run_scan(args: argparse.Namespace) -> int:
             print(f"policy {policy.name}: no detected algorithm outside the allowed set")
             print(f"  note: {policy.caveat}")
 
-    if args.fail_on:
-        threshold = Priority(args.fail_on).rank
+    if fail_on:
+        threshold = Priority(fail_on).rank
         gated = sum(
             1
             for f in cbom.findings
@@ -220,7 +260,7 @@ def _run_scan(args: argparse.Namespace) -> int:
         )
         if gated:
             print(
-                f"fail-on gate: {gated} finding(s) at or above {args.fail_on}",
+                f"fail-on gate: {gated} finding(s) at or above {fail_on}",
                 file=sys.stderr,
             )
             exit_code = 1

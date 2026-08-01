@@ -1,0 +1,15 @@
+# Example: use Lattice as a pre-commit hook in *your* repository.
+# Copy this to your project root as .pre-commit-config.yaml, then run:
+#   pre-commit install
+#   pre-commit run --all-files
+#
+# This runs Lattice on every commit and blocks the commit if any P0
+# (broken-today or harvest-now-decrypt-later) cryptography is present.
+repos:
+  - repo: https://github.com/mk12002/Lattice
+    rev: v0.3.0            # pin to a released tag
+    hooks:
+      - id: lattice-scan
+        # To gate only on *newly introduced* debt instead of all P0s, run the
+        # diff workflow in CI (see docs/examples/github-actions-sarif.yml) rather
+        # than a pre-commit hook, which only sees the current tree.

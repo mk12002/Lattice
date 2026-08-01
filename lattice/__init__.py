@@ -6,4 +6,4 @@ and classical weakness, and emits a prioritized migration roadmap toward the
 NIST post-quantum standards (FIPS 203/204/205).
 """
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"

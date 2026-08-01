@@ -61,17 +61,20 @@ enforces — when someone disagrees with a judgment, the argument is about one r
 A **readiness score (0–100)** summarizes the scan, and its formula is printed next to the
 number in every report — no black boxes.
 
-## 4. What it can see (nine detectors)
+## 4. What it can see (12 languages + config + dependencies)
 
 | Detector | How it works | Confidence |
 |---|---|---|
 | Python | real AST parsing — aliased imports can't hide; infers AES key sizes from context | high |
 | Go | import mapping — unused imports don't compile, so an import is near-proof | high |
-| Java/Kotlin | parses JCA strings like `"AES/ECB/PKCS5Padding"` into algorithm + mode | medium |
+| Java/Kotlin/Scala | parses JCA strings like `"AES/ECB/PKCS5Padding"` into algorithm + mode | medium |
 | JavaScript/TS | node:crypto calls, WebCrypto params, cipher triples like `aes-128-ecb` | medium |
 | C/C++ | OpenSSL/mbedTLS/libsodium tokens (`EVP_aes_128_ecb`, `crypto_sign_...`) | medium |
 | Rust | RustCrypto crates, the `openssl` crate, `ring` constants | medium |
 | C#/.NET | `System.Security.Cryptography` types, `CipherMode` binding | medium |
+| Ruby | OpenSSL stdlib (`OpenSSL::Cipher`, `OpenSSL::PKey`) + bcrypt/argon2 gems | medium |
+| PHP | `openssl_*`, `hash()`/`password_hash()`, the Sodium extension | medium |
+| Swift | CryptoKit (`Insecure.MD5`, `P256.Signing`, `AES.GCM`) + CommonCrypto | medium |
 | Config & keys | PEM headers, X.509 certificates (a small hardened DER parser reads only the algorithm identifiers), SSH keys, nginx/Apache TLS directives | high |
 | Dependencies | crypto libraries named in requirements.txt, package.json, pom.xml, go.mod, Cargo.toml… | high (presence) |
 
@@ -98,9 +101,12 @@ formats. No network code exists anywhere in the package. (Full statement:
 - **Drift detection** — because output is deterministic (same input → byte-identical
   output), two CBOMs can be diffed: `lattice diff old.json new.json --fail-on-new P0`
   blocks a pull request that *introduces* weak crypto without punishing pre-existing debt.
-- **Policy packs** — `--policy cnsa2` additionally checks findings against the NSA's
-  CNSA 2.0 algorithm suite (compliance is a different question from security, so it's a
+  Drift can be emitted as text or JSON (`--format json --out drift.json`).
+- **Policy packs** — `--policy cnsa2|cnsa1|fips140` additionally checks findings against a
+  named compliance suite (compliance is a different question from security, so it's a
   separate layer).
+- **Repo config** — a `lattice.toml` `[scan]` table holds default `exclude`, `languages`,
+  `fail_on`, and `max_file_bytes`, so CI jobs don't re-pass the same flags.
 
 ## 7. Does it actually work? (evidence, not claims)
 
@@ -131,7 +137,7 @@ positives, and an inventory is not a proof of correct usage.
 - **Architecture**: `rules/` (the knowledge base — 45+ algorithms with quantum/classical
   status and PQC replacements) ← `core/` (models, scoring, walker, engine, diff, policy,
   suppressions) ← `detectors/` and `emitters/`. Core never imports a detector or emitter.
-- **153 tests, ~90% coverage**: a scoring truth table, per-language known-answer fixtures
+- **171 tests, ~90% coverage**: a scoring truth table, per-language known-answer fixtures
   (false negatives never acceptable), byte-determinism tests for all three formats,
   secret-leak guards, and fuzzing for the DER/config parsers. Ruff + mypy clean; CI
   dogfoods the tool on its own fixtures and requires the P0 gate to trip.
@@ -142,7 +148,7 @@ positives, and an inventory is not a proof of correct usage.
 ## 9. Where this sits in the ecosystem
 
 The main prior art is PQCA/IBM's **CBOMkit** (SonarQube plugin, Java + Python). Lattice's
-lane: **zero infrastructure, nine languages, prioritized output instead of a yes/no
+lane: **zero infrastructure, 12 languages, prioritized output instead of a yes/no
 whitelist, and the CI lifecycle** (gate → accept → diff). Full honest comparison,
 including where the alternatives are stronger: [COMPARISON.md](COMPARISON.md).
 

@@ -1,0 +1,54 @@
+# Example: run Lattice in GitHub Actions and surface findings in code scanning.
+# Copy to .github/workflows/lattice.yml in your repository.
+#
+# Two independent gates are shown:
+#   1. `--fail-on P0` blocks any PR whose tree contains P0 crypto (strict).
+#   2. `lattice diff --fail-on-new P0` blocks only PRs that *introduce* new P0
+#      crypto, which is the adoptable gate for a codebase with existing debt.
+# Use one or the other; the diff gate is recommended mid-migration.
+
+name: crypto-agility
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write     # required to upload SARIF to code scanning
+
+jobs:
+  lattice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Lattice
+        run: pip install git+https://github.com/mk12002/Lattice   # not yet on PyPI
+
+      - name: Scan and emit SARIF
+        run: lattice scan . --format sarif --out lattice-report
+
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: lattice-report/findings.sarif
+
+      # --- Option A: strict gate (fails if any P0 exists) ---
+      - name: Gate on P0 (strict)
+        if: github.event_name == 'pull_request'
+        run: lattice scan . --fail-on P0 --quiet
+
+      # --- Option B: drift gate (fails only on *new* P0) ---
+      # - name: Baseline (main) CBOM
+      #   run: |
+      #     git fetch origin main
+      #     git worktree add /tmp/base origin/main
+      #     lattice scan /tmp/base --format cbom --out /tmp/base-report
+      # - name: Current CBOM + drift gate
+      #   run: |
+      #     lattice scan . --format cbom --out /tmp/cur-report
+      #     lattice diff /tmp/base-report/cbom.json /tmp/cur-report/cbom.json --fail-on-new P0

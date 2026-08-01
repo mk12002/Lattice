@@ -1,0 +1,9 @@
+# Pre-commit hook definitions provided by Lattice.
+# Consumers add this repo to their .pre-commit-config.yaml (see docs/examples/).
+- id: lattice-scan
+  name: Lattice crypto-agility scan (block P0)
+  description: Scan for quantum-vulnerable and broken cryptography; fail on P0 findings.
+  entry: lattice scan . --format cbom --out lattice-report --fail-on P0 --quiet
+  language: python
+  pass_filenames: false
+  always_run: true

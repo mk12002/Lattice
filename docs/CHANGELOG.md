@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.3.0 — 2026-08-01 (coverage + lifecycle: 12 languages, config, more policies)
+
+- **Three new language detectors**: Ruby (OpenSSL stdlib + gems), PHP
+  (`openssl_*`/`hash()`/`password_hash`/Sodium), and Swift (CryptoKit +
+  CommonCrypto) — each with known-answer fixtures and tests. Detector coverage
+  is now 9 languages + config + dependencies.
+- **Kotlin coverage made real**: added a Kotlin fixture and test proving the
+  Java/JCA detector (which already claimed `.kt/.kts/.scala`) works on Kotlin.
+- **`lattice diff` machine-readable output**: `--format {text,json}` and `--out
+  FILE` so CI/dashboards can consume drift the way they consume the CBOM/SARIF.
+- **Scan defaults in `lattice.toml`**: an optional `[scan]` table
+  (`exclude`, `languages`, `fail_on`, `max_file_bytes`) so teams stop re-passing
+  the same flags. CLI flags override the file; the file overrides built-ins.
+- **Two new policy packs**: CNSA 1.0 (pre-quantum suite; caveats that it is
+  *not* quantum-safe) and an illustrative FIPS-140 approved-algorithm pack.
+  Policy family scope is now per-`Policy` (FIPS-140 also governs MACs).
+- **Integrations**: a `.pre-commit-hooks.yaml` (id `lattice-scan`) plus example
+  `docs/examples/.pre-commit-config.yaml` and `docs/examples/github-actions-sarif.yml`.
+- **Fixes** (from the gap audit): corrected placeholder repo URLs in
+  `pyproject.toml` and the SARIF `informationUri`; added `lattice/__main__.py`
+  so `python -m lattice` works; relocated diagram SVGs to `docs/images/`;
+  reconciled test-count drift; honest `docs/GAPS.md` added.
+- 171 tests (169 pass, 2 Windows-skipped); ruff + mypy + bandit clean.
+
 ## v0.2.1 — 2026-07-19 (security hardening)
 
 - **Symlinks are no longer followed.** A file symlink planted in a scanned tree could

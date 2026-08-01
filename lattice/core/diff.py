@@ -145,3 +145,34 @@ def render_text(result: DiffResult) -> str:
             suffix = f" x{count}" if count > 1 else ""
             lines.append(f"  - [{priority}] {algorithm} in {location}{suffix}")
     return "\n".join(lines) + "\n"
+
+
+def render_json(result: DiffResult) -> str:
+    """Machine-readable drift summary (deterministic).
+
+    Lets CI systems and dashboards consume drift the way they consume the
+    CBOM/SARIF. Ordering matches ``render_text`` (already deterministic).
+    """
+
+    def entries(items: list[tuple[_Key, int]]) -> list[dict]:
+        return [
+            {
+                "algorithm": algorithm,
+                "location": location,
+                "priority": priority,
+                "count": count,
+            }
+            for (algorithm, location, priority), count in items
+        ]
+
+    document = {
+        "baselineReadinessScore": result.baseline_score,
+        "currentReadinessScore": result.current_score,
+        "new": entries(result.new),
+        "resolved": entries(result.resolved),
+        "summary": {
+            "new": sum(c for _, c in result.new),
+            "resolved": sum(c for _, c in result.resolved),
+        },
+    }
+    return json.dumps(document, indent=2, ensure_ascii=False) + "\n"
