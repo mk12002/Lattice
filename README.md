@@ -19,7 +19,7 @@ post-quantum standards.
   <img src="docs/images/terminal-scan.svg" alt="lattice scan run: 15 findings, P0=5, readiness 56/100, fail-on P0 exits 1" width="760">
 </p>
 
-![How a scan works](marketing/assets/lattice-architecture.svg)
+![How a scan works](docs/images/lattice-architecture.svg)
 
 **The post-quantum threat in three sentences.** Adversaries can record encrypted traffic today
 and decrypt it once a cryptographically relevant quantum computer exists — *harvest now, decrypt
@@ -65,13 +65,19 @@ report. See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 ## Install
 
 Requires Python 3.11+. Zero runtime dependencies (standard library only — every third-party
-package is a supply-chain liability in a security tool).
+package is a supply-chain liability in a security tool). Lattice is not yet published to PyPI,
+so install from source:
 
 ```bash
-pip install .        # from a checkout
+git clone https://github.com/mk12002/Lattice && cd Lattice
+pip install .        # from the checkout
 # or, for development:
 pip install -e ".[dev]"
 ```
+
+> If the `lattice` command isn't found after install, the console-script directory isn't on
+> your `PATH`. Either add it, or run the tool as a module — `python -m lattice <args>` is
+> equivalent to `lattice <args>`.
 
 ## Quickstart
 
@@ -143,7 +149,7 @@ file never crashes a scan — it is skipped with a warning in the summary.
 ```yaml
 - name: Block quantum-vulnerable and broken crypto
   run: |
-    pip install lattice-scanner
+    pip install git+https://github.com/mk12002/Lattice   # not yet on PyPI
     lattice scan . --format sarif --out lattice-report --fail-on P0
 - uses: github/codeql-action/upload-sarif@v3   # optional: surface in code scanning
   if: always()
@@ -204,6 +210,8 @@ CodeQL, and TLS scanners, see [docs/COMPARISON.md](docs/COMPARISON.md).
   priority *none* and the note "usage not confirmed by a call site".
 - **`.gitignore` support is a subset** (literal names, `*` globs, directory patterns from the
   scan root; no negations, no nested files).
+
+A full, ranked account of open gaps and roadmap items is in [docs/GAPS.md](docs/GAPS.md).
 
 ## Security
 

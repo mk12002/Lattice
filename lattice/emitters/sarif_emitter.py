@@ -101,7 +101,7 @@ def emit(cbom: CBOM) -> str:
                     "driver": {
                         "name": "Lattice",
                         "version": cbom.tool_version,
-                        "informationUri": "https://github.com/lattice-scanner/lattice",
+                        "informationUri": "https://github.com/mk12002/Lattice",
                         "rules": [rules[k] for k in sorted(rules)],
                     }
                 },

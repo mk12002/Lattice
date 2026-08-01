@@ -37,7 +37,7 @@ The HTML report — one self-contained file, readable by a CISO, in light or dar
 
 ![Lattice HTML report](images/report-light.png)
 
-![How a scan works](../marketing/assets/lattice-architecture.svg)
+![How a scan works](images/lattice-architecture.svg)
 
 ## 3. The core idea: not "is it safe?" but "what breaks first?"
 
@@ -51,7 +51,7 @@ independent judgments plus one insight:
   than quantum-broken *signatures*, because recorded traffic can be decrypted later but
   a recorded signature mostly can't be retro-forged.
 
-![Priority decision flow](../marketing/assets/lattice-scoring-model.svg)
+![Priority decision flow](images/lattice-scoring-model.svg)
 
 So: MD5 → **P0** (broken today). RSA key exchange → **P0** (recordable traffic). ECDSA
 signature → **P1**. AES-128 → **P2**. SHA-256 → **P3**. AES-256-GCM, ChaCha20, ML-KEM →
@@ -131,7 +131,7 @@ positives, and an inventory is not a proof of correct usage.
 - **Architecture**: `rules/` (the knowledge base — 45+ algorithms with quantum/classical
   status and PQC replacements) ← `core/` (models, scoring, walker, engine, diff, policy,
   suppressions) ← `detectors/` and `emitters/`. Core never imports a detector or emitter.
-- **138 tests, ~90% coverage**: a scoring truth table, per-language known-answer fixtures
+- **153 tests, ~90% coverage**: a scoring truth table, per-language known-answer fixtures
   (false negatives never acceptable), byte-determinism tests for all three formats,
   secret-leak guards, and fuzzing for the DER/config parsers. Ruff + mypy clean; CI
   dogfoods the tool on its own fixtures and requires the P0 gate to trip.

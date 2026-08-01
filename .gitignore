@@ -12,3 +12,6 @@ venv/
 .coverage
 htmlcov/
 lattice-report/
+
+# Local engineering handbook / study notes (not part of the shipped project)
+lattice_breakdown/

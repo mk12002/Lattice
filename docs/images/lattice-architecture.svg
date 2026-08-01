@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#cdd6f4"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="560" fill="#1e1e2e"/>
+  <text x="480" y="42" fill="#cdd6f4" font-size="24" font-weight="700" text-anchor="middle">Lattice — how a scan works</text>
+  <text x="480" y="66" fill="#7f849c" font-size="13" text-anchor="middle">source tree in → prioritized Cryptographic Bill of Materials out · offline · deterministic</text>
+
+  <!-- Source tree -->
+  <rect x="30" y="120" width="180" height="300" rx="10" fill="#313244" stroke="#45475a"/>
+  <text x="120" y="148" fill="#cdd6f4" font-size="15" font-weight="700" text-anchor="middle">Source tree</text>
+  <text x="120" y="176" fill="#a6adc8" font-size="12" text-anchor="middle">*.py  *.java  *.js/ts</text>
+  <text x="120" y="196" fill="#a6adc8" font-size="12" text-anchor="middle">*.go  *.c/cpp  *.rs  *.cs</text>
+  <text x="120" y="216" fill="#a6adc8" font-size="12" text-anchor="middle">*.pem  *.crt  *.p12</text>
+  <text x="120" y="236" fill="#a6adc8" font-size="12" text-anchor="middle">nginx / apache / openssl conf</text>
+  <text x="120" y="256" fill="#a6adc8" font-size="12" text-anchor="middle">requirements · package.json</text>
+  <text x="120" y="276" fill="#a6adc8" font-size="12" text-anchor="middle">pom · go.mod · Cargo.toml</text>
+  <rect x="45" y="300" width="150" height="52" rx="6" fill="#181825" stroke="#45475a"/>
+  <text x="120" y="322" fill="#f9e2af" font-size="11.5" text-anchor="middle">walker: .gitignore, size caps,</text>
+  <text x="120" y="339" fill="#f9e2af" font-size="11.5" text-anchor="middle">binary sniff, vendored-tree skip</text>
+  <text x="120" y="392" fill="#7f849c" font-size="11" text-anchor="middle">private-key bodies</text>
+  <text x="120" y="408" fill="#7f849c" font-size="11" text-anchor="middle">are never read</text>
+
+  <!-- Detectors -->
+  <rect x="270" y="120" width="200" height="300" rx="10" fill="#89b4fa" fill-opacity="0.12" stroke="#89b4fa"/>
+  <text x="370" y="148" fill="#89b4fa" font-size="15" font-weight="700" text-anchor="middle">9 detectors</text>
+  <text x="370" y="174" fill="#cdd6f4" font-size="12" text-anchor="middle">Python — AST (high conf)</text>
+  <text x="370" y="194" fill="#cdd6f4" font-size="12" text-anchor="middle">Go — import map (high)</text>
+  <text x="370" y="214" fill="#cdd6f4" font-size="12" text-anchor="middle">Java · JS/TS · C/C++</text>
+  <text x="370" y="234" fill="#cdd6f4" font-size="12" text-anchor="middle">Rust · C# — tokens (medium)</text>
+  <text x="370" y="254" fill="#cdd6f4" font-size="12" text-anchor="middle">config — PEM/X.509/TLS</text>
+  <text x="370" y="274" fill="#cdd6f4" font-size="12" text-anchor="middle">dependency manifests</text>
+  <rect x="285" y="296" width="170" height="56" rx="6" fill="#181825" stroke="#45475a"/>
+  <text x="370" y="318" fill="#f9e2af" font-size="11.5" text-anchor="middle">every finding = matched</text>
+  <text x="370" y="335" fill="#f9e2af" font-size="11.5" text-anchor="middle">pattern at a real file:line</text>
+  <text x="370" y="392" fill="#7f849c" font-size="11" text-anchor="middle">confidence derived from</text>
+  <text x="370" y="408" fill="#7f849c" font-size="11" text-anchor="middle">match mechanism</text>
+
+  <!-- Knowledge base + severity -->
+  <rect x="530" y="120" width="200" height="300" rx="10" fill="#a6e3a1" fill-opacity="0.12" stroke="#a6e3a1"/>
+  <text x="630" y="148" fill="#a6e3a1" font-size="15" font-weight="700" text-anchor="middle">Judgment</text>
+  <text x="630" y="176" fill="#cdd6f4" font-size="12" text-anchor="middle">knowledge base: 45+ algorithms</text>
+  <text x="630" y="196" fill="#cdd6f4" font-size="12" text-anchor="middle">quantum status (Shor / Grover)</text>
+  <text x="630" y="216" fill="#cdd6f4" font-size="12" text-anchor="middle">classical status (broken today?)</text>
+  <text x="630" y="236" fill="#cdd6f4" font-size="12" text-anchor="middle">HNDL heuristic (capturable?)</text>
+  <text x="630" y="262" fill="#f38ba8" font-size="13" font-weight="700" text-anchor="middle">→ priority P0–P3</text>
+  <text x="630" y="282" fill="#cdd6f4" font-size="12" text-anchor="middle">+ justification per finding</text>
+  <rect x="545" y="296" width="170" height="56" rx="6" fill="#181825" stroke="#45475a"/>
+  <text x="630" y="318" fill="#f9e2af" font-size="11.5" text-anchor="middle">spec = 30-row truth table</text>
+  <text x="630" y="335" fill="#f9e2af" font-size="11.5" text-anchor="middle">(the test suite IS the spec)</text>
+  <text x="630" y="392" fill="#7f849c" font-size="11" text-anchor="middle">lattice.toml acceptances:</text>
+  <text x="630" y="408" fill="#7f849c" font-size="11" text-anchor="middle">reason required, expiry honored</text>
+
+  <!-- Outputs -->
+  <rect x="790" y="120" width="140" height="86" rx="10" fill="#313244" stroke="#89b4fa"/>
+  <text x="860" y="152" fill="#89b4fa" font-size="14" font-weight="700" text-anchor="middle">CBOM JSON</text>
+  <text x="860" y="172" fill="#a6adc8" font-size="11" text-anchor="middle">CycloneDX-style</text>
+  <text x="860" y="188" fill="#a6adc8" font-size="11" text-anchor="middle">diffable in CI</text>
+
+  <rect x="790" y="227" width="140" height="86" rx="10" fill="#313244" stroke="#a6e3a1"/>
+  <text x="860" y="259" fill="#a6e3a1" font-size="14" font-weight="700" text-anchor="middle">HTML report</text>
+  <text x="860" y="279" fill="#a6adc8" font-size="11" text-anchor="middle">self-contained</text>
+  <text x="860" y="295" fill="#a6adc8" font-size="11" text-anchor="middle">CISO-readable</text>
+
+  <rect x="790" y="334" width="140" height="86" rx="10" fill="#313244" stroke="#f9e2af"/>
+  <text x="860" y="366" fill="#f9e2af" font-size="14" font-weight="700" text-anchor="middle">SARIF 2.1.0</text>
+  <text x="860" y="386" fill="#a6adc8" font-size="11" text-anchor="middle">code scanning</text>
+  <text x="860" y="402" fill="#a6adc8" font-size="11" text-anchor="middle">std suppressions</text>
+
+  <!-- Arrows -->
+  <line x1="210" y1="270" x2="266" y2="270" stroke="#cdd6f4" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="238" y="258" fill="#7f849c" font-size="10.5" text-anchor="middle">files</text>
+  <line x1="470" y1="270" x2="526" y2="270" stroke="#cdd6f4" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="498" y="258" fill="#7f849c" font-size="10.5" text-anchor="middle">assets</text>
+  <line x1="730" y1="220" x2="786" y2="170" stroke="#cdd6f4" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="730" y1="270" x2="786" y2="270" stroke="#cdd6f4" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="730" y1="320" x2="786" y2="372" stroke="#cdd6f4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Gates strip -->
+  <rect x="30" y="460" width="900" height="66" rx="10" fill="#181825" stroke="#45475a"/>
+  <text x="480" y="486" fill="#cdd6f4" font-size="13.5" font-weight="700" text-anchor="middle">CI gates</text>
+  <text x="480" y="510" fill="#a6adc8" font-size="12.5" text-anchor="middle">scan --fail-on P0   ·   diff --fail-on-new P0 (block only NEW debt)   ·   --policy cnsa2   —   deterministic output makes all three possible</text>
+</svg>

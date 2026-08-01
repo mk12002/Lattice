@@ -40,7 +40,9 @@ dev = [
 lattice = "lattice.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/lattice-scanner/lattice"
+Homepage = "https://github.com/mk12002/Lattice"
+Repository = "https://github.com/mk12002/Lattice"
+Issues = "https://github.com/mk12002/Lattice/issues"
 
 [tool.setuptools.packages.find]
 include = ["lattice*"]
