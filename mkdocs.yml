@@ -1,0 +1,53 @@
+site_name: Lattice
+site_description: Crypto-agility and post-quantum-readiness scanner (CBOM)
+site_url: https://mk12002.github.io/Lattice/
+repo_url: https://github.com/mk12002/Lattice
+repo_name: mk12002/Lattice
+docs_dir: docs
+
+# Internal planning docs live in docs/ but are not part of the published site.
+exclude_docs: |
+  LATTICE_BUILD_SPEC.md
+  LATTICE_EXECUTION_PLAN.md
+  VISION.md
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Explained simply: PROJECT_EXPLAINED.md
+  - Command & config reference: reference.md
+  - Comparison to other tools: COMPARISON.md
+  - Accuracy & benchmarks: ACCURACY_NOTES.md
+  - Threat model: THREAT_MODEL.md
+  - Gaps & roadmap: GAPS.md
+
+# Note: CHANGELOG.md and CONTRIBUTING.md live at the repo root (GitHub convention)
+# and are linked from the Home page rather than duplicated into the docs tree.

@@ -32,8 +32,17 @@ def test_scan_all_formats(tmp_path, capsys):
 
 def test_fail_on_gate_nonzero_with_p0(tmp_path):
     code = main(
-        ["scan", str(FIXTURES / "python"), "--format", "cbom", "--out", str(tmp_path),
-         "--fail-on", "P0", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES / "python"),
+            "--format",
+            "cbom",
+            "--out",
+            str(tmp_path),
+            "--fail-on",
+            "P0",
+            "--quiet",
+        ]
     )
     assert code == 1
 
@@ -41,8 +50,17 @@ def test_fail_on_gate_nonzero_with_p0(tmp_path):
 def test_fail_on_gate_zero_without_matching_priority(tmp_path):
     # the safe fixture alone has only compliant findings
     code = main(
-        ["scan", str(FIXTURES / "python" / "safe_crypto.py"), "--format", "cbom",
-         "--out", str(tmp_path), "--fail-on", "P0", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES / "python" / "safe_crypto.py"),
+            "--format",
+            "cbom",
+            "--out",
+            str(tmp_path),
+            "--fail-on",
+            "P0",
+            "--quiet",
+        ]
     )
     assert code == 0
 
@@ -50,8 +68,17 @@ def test_fail_on_gate_zero_without_matching_priority(tmp_path):
 def test_fail_on_threshold_includes_higher_priorities(tmp_path):
     # P3 threshold must also trip on P0 findings (at or above)
     code = main(
-        ["scan", str(FIXTURES / "python"), "--format", "cbom", "--out", str(tmp_path),
-         "--fail-on", "P3", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES / "python"),
+            "--format",
+            "cbom",
+            "--out",
+            str(tmp_path),
+            "--fail-on",
+            "P3",
+            "--quiet",
+        ]
     )
     assert code == 1
 
@@ -59,8 +86,19 @@ def test_fail_on_threshold_includes_higher_priorities(tmp_path):
 def test_exclude_filters_files(tmp_path):
     out = tmp_path / "rep"
     code = main(
-        ["scan", str(FIXTURES / "python"), "--format", "cbom", "--out", str(out),
-         "--exclude", "broken_hash.py", "--exclude", "quantum_vulnerable.py", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES / "python"),
+            "--format",
+            "cbom",
+            "--out",
+            str(out),
+            "--exclude",
+            "broken_hash.py",
+            "--exclude",
+            "quantum_vulnerable.py",
+            "--quiet",
+        ]
     )
     assert code == 0
     doc = json.loads((out / "cbom.json").read_text(encoding="utf-8"))
@@ -72,16 +110,21 @@ def test_exclude_filters_files(tmp_path):
 def test_languages_filter(tmp_path):
     out = tmp_path / "rep"
     code = main(
-        ["scan", str(FIXTURES), "--format", "cbom", "--out", str(out),
-         "--languages", "go", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES),
+            "--format",
+            "cbom",
+            "--out",
+            str(out),
+            "--languages",
+            "go",
+            "--quiet",
+        ]
     )
     assert code == 0
     doc = json.loads((out / "cbom.json").read_text(encoding="utf-8"))
-    locations = {
-        occ["location"]
-        for c in doc["components"]
-        for occ in c["evidence"]["occurrences"]
-    }
+    locations = {occ["location"] for c in doc["components"] for occ in c["evidence"]["occurrences"]}
     assert any(loc.endswith("main.go") for loc in locations)
     assert not any(loc.endswith(".java") for loc in locations)
     # config + dependency detectors stay active regardless of --languages
@@ -90,8 +133,17 @@ def test_languages_filter(tmp_path):
 
 def test_unknown_language_is_usage_error(tmp_path):
     code = main(
-        ["scan", str(FIXTURES), "--format", "cbom", "--out", str(tmp_path),
-         "--languages", "cobol", "--quiet"]
+        [
+            "scan",
+            str(FIXTURES),
+            "--format",
+            "cbom",
+            "--out",
+            str(tmp_path),
+            "--languages",
+            "cobol",
+            "--quiet",
+        ]
     )
     assert code == 2
 
@@ -122,9 +174,7 @@ def test_rules_list_prints_full_table(capsys):
 @pytest.mark.parametrize("fmt", ["cbom", "html", "sarif"])
 def test_single_format_writes_only_that_file(tmp_path, fmt):
     out = tmp_path / "rep"
-    code = main(
-        ["scan", str(FIXTURES / "python"), "--format", fmt, "--out", str(out), "--quiet"]
-    )
+    code = main(["scan", str(FIXTURES / "python"), "--format", fmt, "--out", str(out), "--quiet"])
     assert code == 0
     written = {p.name for p in out.iterdir()}
     assert written == {{"cbom": "cbom.json", "html": "report.html", "sarif": "findings.sarif"}[fmt]}

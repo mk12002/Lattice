@@ -54,8 +54,13 @@ def test_sort_is_deterministic_under_shuffle():
 
 
 def test_priority_rank_ordering():
-    ranks = [Priority.P0.rank, Priority.P1.rank, Priority.P2.rank, Priority.P3.rank,
-             Priority.NONE.rank]
+    ranks = [
+        Priority.P0.rank,
+        Priority.P1.rank,
+        Priority.P2.rank,
+        Priority.P3.rank,
+        Priority.NONE.rank,
+    ]
     assert ranks == sorted(ranks)
     assert Priority.P0.rank == 0
 

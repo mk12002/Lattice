@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lattice-scanner"
-version = "0.3.0"
+version = "0.4.0"
 description = "Crypto-agility and post-quantum-readiness scanner: builds a CBOM, grades quantum/classical risk, and emits a migration roadmap."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -35,6 +35,10 @@ dev = [
     "bandit>=1.7",
     "pip-audit>=2.7",
 ]
+# Docs-site tooling only (not runtime). Build the site with: mkdocs serve / build.
+docs = [
+    "mkdocs-material>=9.5",
+]
 
 [project.scripts]
 lattice = "lattice.cli:main"
@@ -45,6 +49,7 @@ Repository = "https://github.com/mk12002/Lattice"
 Issues = "https://github.com/mk12002/Lattice/issues"
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["lattice*"]
 
 [tool.ruff]

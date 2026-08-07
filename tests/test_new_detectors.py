@@ -38,8 +38,7 @@ def test_rust_fixture():
     rsa = next(a for a in _detect(RustDetector(), "rust/crypto_usage.rs") if a.algorithm == "RSA")
     assert rsa.key_size == 2048
     assert all(
-        a.confidence == Confidence.MEDIUM
-        for a in _detect(RustDetector(), "rust/crypto_usage.rs")
+        a.confidence == Confidence.MEDIUM for a in _detect(RustDetector(), "rust/crypto_usage.rs")
     )
 
 
@@ -75,10 +74,7 @@ def test_csharp_weak_hmac_digest_coreported():
 
 def test_csharp_ecdh_and_bouncycastle():
     detector = CSharpDetector()
-    source = (
-        "using Org.BouncyCastle.Crypto;\n"
-        "var ecdh = ECDiffieHellman.Create();\n"
-    )
+    source = "using Org.BouncyCastle.Crypto;\nvar ecdh = ECDiffieHellman.Create();\n"
     findings = [make_finding(a) for a in detector.detect(PurePosixPath("Kx.cs"), source)]
     by_algorithm = {f.asset.algorithm: f for f in findings}
     assert by_algorithm["ECDH"].assessment.priority == Priority.P0  # HNDL key exchange

@@ -1,0 +1,50 @@
+name: Bug report
+description: A finding is wrong, a scan crashed, or output is incorrect
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For a suspected **security vulnerability in Lattice
+        itself**, please use the Security tab (private reporting) instead of a public issue.
+  - type: input
+    id: version
+    attributes:
+      label: Lattice version
+      description: Output of `lattice version`
+      placeholder: "lattice 0.4.0"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version & OS
+      placeholder: "3.12 on Ubuntu 24.04"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you run, and what did you expect vs. observe?
+      placeholder: |
+        Command: lattice scan ./myrepo --format cbom
+        Expected: RSA signature graded P1
+        Observed: graded P0
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A small code snippet or file that triggers the issue (redact secrets).
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmations
+      options:
+        - label: I redacted any real keys/secrets from this report
+          required: true
+        - label: This is not a private security vulnerability (those go to the Security tab)
+          required: true

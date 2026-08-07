@@ -42,9 +42,7 @@ def test_sarif_shape(cbom):
         assert location["artifactLocation"]["uri"]
         assert location["region"]["startLine"] >= 1
     # a P0 finding must surface as error
-    p0 = [
-        r for r in run["results"] if r["properties"]["priority"] == "P0"
-    ]
+    p0 = [r for r in run["results"] if r["properties"]["priority"] == "P0"]
     assert p0 and all(r["level"] == "error" for r in p0)
 
 
@@ -94,9 +92,7 @@ def test_counts_consistent_across_all_three_formats(cbom):
     )
     sarif_doc = json.loads(sarif_emitter.emit(cbom))
     sarif_p0 = sum(
-        1
-        for r in sarif_doc["runs"][0]["results"]
-        if r["properties"]["priority"] == "P0"
+        1 for r in sarif_doc["runs"][0]["results"] if r["properties"]["priority"] == "P0"
     )
     page = html_emitter.emit(cbom)
     assert cbom_p0 == p0_count

@@ -101,8 +101,7 @@ def test_policy_cli_exit_code(tmp_path):
     (repo / "bad.py").write_text(BROKEN_PY, encoding="utf-8")
     out = tmp_path / "rep"
     code = main(
-        ["scan", str(repo), "--format", "cbom", "--out", str(out), "--policy", "cnsa2",
-         "--quiet"]
+        ["scan", str(repo), "--format", "cbom", "--out", str(out), "--policy", "cnsa2", "--quiet"]
     )
     assert code == 1
 
@@ -110,8 +109,7 @@ def test_policy_cli_exit_code(tmp_path):
     clean.mkdir()
     (clean / "good.py").write_text(SAFE_PY, encoding="utf-8")
     code = main(
-        ["scan", str(clean), "--format", "cbom", "--out", str(out), "--policy", "cnsa2",
-         "--quiet"]
+        ["scan", str(clean), "--format", "cbom", "--out", str(out), "--policy", "cnsa2", "--quiet"]
     )
     assert code == 0
 

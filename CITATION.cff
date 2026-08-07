@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "Lattice: a crypto-agility and post-quantum-readiness scanner"
+message: "If you use Lattice in research or tooling, please cite it."
+type: software
+authors:
+  - name: "Lattice contributors"
+repository-code: "https://github.com/mk12002/Lattice"
+url: "https://github.com/mk12002/Lattice"
+abstract: >-
+  Lattice statically analyzes a codebase, produces a CycloneDX-style
+  Cryptographic Bill of Materials (CBOM), grades every cryptographic usage for
+  quantum vulnerability (Shor/Grover) and classical weakness, and emits a
+  prioritized migration roadmap toward the NIST post-quantum standards
+  (FIPS 203/204/205). It covers 12 languages plus configuration and dependency
+  manifests, has zero runtime dependencies, and is deterministic and offline.
+keywords:
+  - cryptography
+  - post-quantum
+  - cbom
+  - crypto-agility
+  - static-analysis
+  - sbom
+  - security
+license: Apache-2.0
+version: 0.4.0

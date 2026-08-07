@@ -1,0 +1,7 @@
+# Lattice has ZERO runtime dependencies — it runs on the Python 3.11+ standard
+# library only. This is a deliberate security posture (every third-party package
+# is supply-chain surface in a scanner that reads sensitive source), enforced by
+# `dependencies = []` in pyproject.toml.
+#
+# Install the tool:            pip install .
+# Install with dev tooling:    pip install -e ".[dev]"   (or: -r requirements-dev.txt)

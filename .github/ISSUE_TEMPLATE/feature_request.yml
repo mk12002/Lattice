@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest a new language detector, policy pack, or capability
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of request
+      options:
+        - New language detector
+        - New policy pack
+        - New algorithm / knowledge-base entry
+        - New output format or CLI capability
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the use case, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach (optional)
+      description: |
+        For a new detector or policy pack, note that these are designed to be one-file
+        additions — see CONTRIBUTING.md. Sample code/config snippets welcome.

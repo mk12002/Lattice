@@ -51,8 +51,7 @@ def test_accepted_findings_do_not_trip_fail_on(tmp_path):
     )
     out = tmp_path / "rep"
     code = main(
-        ["scan", str(tmp_path), "--format", "cbom", "--out", str(out),
-         "--fail-on", "P0", "--quiet"]
+        ["scan", str(tmp_path), "--format", "cbom", "--out", str(out), "--fail-on", "P0", "--quiet"]
     )
     assert code == 0
     doc = json.loads((out / "cbom.json").read_text(encoding="utf-8"))

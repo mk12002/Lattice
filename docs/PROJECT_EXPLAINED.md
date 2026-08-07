@@ -126,7 +126,7 @@ excellent modern cryptography is pre-quantum cryptography** — that's the size 
 industry's migration, and the reason this tool exists.
 
 Known limitations are documented, deliberately and in detail, in the
-[README's Limitations section](../README.md#limitations-read-this-before-trusting-a-report)
+[README's Limitations section](https://github.com/mk12002/Lattice#limitations-read-this-before-trusting-a-report) and [GAPS.md](GAPS.md)
 — static analysis can't see runtime-chosen algorithms, regex detectors have false
 positives, and an inventory is not a proof of correct usage.
 

@@ -14,16 +14,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install build tooling
-        run: pip install build
       - name: Verify the tag's code passes its own gate
         run: |
           pip install -e ".[dev]"
           pytest -q
       - name: Build sdist and wheel
-        run: python -m build
+        run: |
+          pip install build twine
+          python -m build
+          twine check dist/*
+      - name: Upload dist for the publish job
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
       - name: Create GitHub release with artifacts
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           generate_release_notes: true
+
+  # Publishing to PyPI is opt-in: it only runs once the maintainer has (1) created
+  # the project on PyPI and (2) configured a Trusted Publisher for this repo +
+  # workflow, then created a "pypi" GitHub Environment. Until then this job is a
+  # no-op-safe placeholder (it needs the environment to run). See RELEASING.md.
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write        # trusted publishing (OIDC) — no API token needed
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

@@ -39,8 +39,7 @@ def test_ruby_fixture():
     rsa = next(a for a in _detect(RubyDetector(), "ruby/crypto_usage.rb") if a.algorithm == "RSA")
     assert rsa.key_size == 2048
     assert all(
-        a.confidence == Confidence.MEDIUM
-        for a in _detect(RubyDetector(), "ruby/crypto_usage.rb")
+        a.confidence == Confidence.MEDIUM for a in _detect(RubyDetector(), "ruby/crypto_usage.rb")
     )
 
 
@@ -61,9 +60,9 @@ def test_swift_fixture():
     expected = sorted(
         [
             ("MD5", None, Priority.P0),
-            ("ECDH", None, Priority.P0),      # Curve25519.KeyAgreement -> HNDL
-            ("ECDSA", None, Priority.P1),     # P256.Signing -> signature
-            ("AES", "GCM", Priority.P2),      # key size not determinable
+            ("ECDH", None, Priority.P0),  # Curve25519.KeyAgreement -> HNDL
+            ("ECDSA", None, Priority.P1),  # P256.Signing -> signature
+            ("AES", "GCM", Priority.P2),  # key size not determinable
             ("CHACHA20", None, Priority.NONE),
         ]
     )

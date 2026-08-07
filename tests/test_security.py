@@ -27,9 +27,7 @@ from lattice.detectors.registry import all_detectors
 # -- symlink handling: a hostile repo must not exfiltrate outside files -------------
 
 
-@pytest.mark.skipif(
-    os.name == "nt", reason="symlink creation needs privileges on Windows"
-)
+@pytest.mark.skipif(os.name == "nt", reason="symlink creation needs privileges on Windows")
 def test_symlinked_file_is_not_followed(tmp_path):
     secret = tmp_path / "outside_secret.txt"
     secret.write_text("import hashlib\nhashlib.md5(b'SECRET-KEY-MATERIAL')\n", encoding="utf-8")

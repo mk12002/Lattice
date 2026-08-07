@@ -93,9 +93,7 @@ def test_cbom_emitter_valid_and_deterministic():
     doc = json.loads(out_a)
     assert doc["bomFormat"] == "CycloneDX"
     assert doc["specVersion"] == "1.6"
-    assert all(
-        c["type"] in ("cryptographic-asset", "library") for c in doc["components"]
-    )
+    assert all(c["type"] in ("cryptographic-asset", "library") for c in doc["components"])
     rsa = next(c for c in doc["components"] if c["name"] == "RSA")
     assert rsa["evidence"]["occurrences"][0]["location"].endswith("quantum_vulnerable.py")
     props = {p["name"]: p["value"] for p in rsa["properties"]}

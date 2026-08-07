@@ -170,10 +170,56 @@ file never crashes a scan — it is skipped with a warning in the summary.
     sarif_file: lattice-report/findings.sarif
 ```
 
+A turnkey workflow (with a drift-gate option) is in
+[docs/examples/github-actions-sarif.yml](docs/examples/github-actions-sarif.yml); a pre-commit
+hook is in [docs/examples/.pre-commit-config.yaml](docs/examples/.pre-commit-config.yaml).
+
+## Architecture
+
+Four stages — **walk → detect → assess → emit** — with a strict dependency rule: `detectors`
+and `emitters` depend on `core`; `core` depends only on `rules`; `core` never imports a detector
+or emitter. That keeps the two things that change most — languages and cryptographic knowledge —
+isolated to one file each, so adding a language or algorithm is a local change.
+
+![How a scan works](docs/images/lattice-architecture.svg)
+
+```
+src/lattice/
+├── core/        models · severity (scoring) · walker · engine · diff · policy · suppress · config
+├── rules/       algorithms.py — the cryptographic knowledge base (pure data + lookup)
+├── detectors/   base + registry + one module per language, config, dependencies
+├── emitters/    cbom (CycloneDX) · sarif · html
+└── cli.py       argparse CLI (scan / diff / rules / version)
+```
+
+A deeper walkthrough is in [docs/PROJECT_EXPLAINED.md](docs/PROJECT_EXPLAINED.md).
+
+## Python API
+
+Everything the CLI does is available as a library — `scan()` returns a pure `CBOM` value (no
+I/O, no exit code), which you can inspect or feed to an emitter:
+
+```python
+from pathlib import Path
+from lattice.core.engine import scan
+from lattice.core.severity import readiness_score
+from lattice.detectors.registry import all_detectors
+from lattice.emitters import cbom_emitter
+
+cbom = scan(Path("myrepo"), all_detectors())
+print(readiness_score(cbom.findings), "/100")
+for f in cbom.sorted_findings():
+    print(f.assessment.priority.value, f.asset.algorithm, f.asset.file_path, f.asset.line_number)
+
+Path("cbom.json").write_text(cbom_emitter.emit(cbom))   # CycloneDX CBOM
+```
+
+Runnable examples are in [examples/](examples/).
+
 ## How scoring works (transparently)
 
 Two orthogonal grades per asset, from a reviewed knowledge base
-(`lattice/rules/algorithms.py` — inspect it with `lattice rules list`):
+(`src/lattice/rules/algorithms.py` — inspect it with `lattice rules list`):
 
 | Condition | Priority |
 |---|---|
@@ -193,13 +239,41 @@ The **readiness score** shown in reports is `100 × (1 − severity-weighted sha
 with weights P0=1.0, P1=0.6, P2=0.3, P3=0.1. It summarizes the composition of what Lattice
 could see; it is not a probability of compromise.
 
+## Benchmarks
+
+Numbers from real runs (see [docs/ACCURACY_NOTES.md](docs/ACCURACY_NOTES.md) for methodology
+and hand-verification). These are honest measurements, not marketing figures.
+
+| Target | Result |
+|---|---|
+| CPython standard library (~5,800 files) | scanned in ~72 s, 173 findings, zero crashes |
+| `FiloSottile/age` (Go) | 30 findings, readiness 62/100 — correctly finds ChaCha20-Poly1305 on quantum-broken X25519 |
+| `paramiko` (Python SSH) | 43 findings, readiness 54/100 — ECDH/ECDSA/RSA, SHA-1 host hashing, MD5 fingerprints |
+| `auth0/node-jsonwebtoken` (JS) | 25 findings, readiness 26/100 — RSA ×11, ECDSA ×7 |
+| Java detector, 6,000 crypto calls in one file | linear-time (regression-tested < 5 s) |
+
+Determinism: two scans of the same tree produce byte-identical output modulo one timestamp
+(regression-tested). Runtime memory is bounded by a per-file size cap.
+
 ## Extending Lattice
 
 Adding a language is one class implementing `lattice.detectors.base.Detector`
 (`applies_to` + `detect`), one fixture directory, and one test. Adding an algorithm is one
 entry in the knowledge base plus its synonyms and a truth-table row. Both are walked through in
-[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). For how Lattice compares to CBOMkit, Semgrep,
+[CONTRIBUTING.md](CONTRIBUTING.md). For how Lattice compares to CBOMkit, Semgrep,
 CodeQL, and TLS scanners, see [docs/COMPARISON.md](docs/COMPARISON.md).
+
+## Roadmap
+
+Versioned, demand-driven; the full ranked list (with what's blocked and why) is in
+[docs/GAPS.md](docs/GAPS.md).
+
+- **Now (v0.4.x):** src-layout package, 12 languages, `lattice.toml [scan]` config,
+  CNSA 2.0 / CNSA 1.0 / FIPS-140 policy packs, JSON drift output, MkDocs site.
+- **Next:** publish to PyPI (blocked on a maintainer action); deeper WebCrypto/Scala coverage;
+  more policy packs (BSI TR-02102, PCI-style).
+- **Later:** dataflow from "algorithm used" to "algorithm protects *this* data class" — the
+  leap from inventory to per-usage risk.
 
 ## Limitations (read this before trusting a report)
 
@@ -236,6 +310,20 @@ in CI, and the untrusted-input surfaces (symlinks, malformed CBOMs, pathological
 parser) have dedicated regression tests in `tests/test_security.py`. Full policy, threat model,
 and how to report a vulnerability: [SECURITY.md](SECURITY.md) and
 [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
+
+## Contributing
+
+Contributions are welcome — adding a language detector or a policy pack is a bounded, one-file
+change. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
+Changelog: [CHANGELOG.md](CHANGELOG.md).
+
+## Citation
+
+If you use Lattice in research or tooling, please cite it via [CITATION.cff](CITATION.cff)
+(GitHub renders a "Cite this repository" button), or:
+
+> Lattice contributors. *Lattice: a crypto-agility and post-quantum-readiness scanner.*
+> https://github.com/mk12002/Lattice
 
 ## License
 

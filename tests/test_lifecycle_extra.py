@@ -83,9 +83,9 @@ def test_scan_config_warns_on_bad_values(tmp_path):
         encoding="utf-8",
     )
     config, warnings = load_scan_config(tmp_path)
-    assert config.languages is None          # unknown language -> rejected
-    assert config.fail_on is None            # invalid threshold -> rejected
-    assert config.max_file_bytes is None     # non-positive -> rejected
+    assert config.languages is None  # unknown language -> rejected
+    assert config.fail_on is None  # invalid threshold -> rejected
+    assert config.max_file_bytes is None  # non-positive -> rejected
     assert len(warnings) == 3
 
 
@@ -106,8 +106,19 @@ def test_cli_fail_on_overrides_config(tmp_path):
     out = tmp_path / "rep"
     # config restricts to go (would find nothing in app.py); CLI overrides with py
     code = main(
-        ["scan", str(tmp_path), "--languages", "py", "--format", "cbom",
-         "--out", str(out), "--quiet", "--fail-on", "P0"]
+        [
+            "scan",
+            str(tmp_path),
+            "--languages",
+            "py",
+            "--format",
+            "cbom",
+            "--out",
+            str(out),
+            "--quiet",
+            "--fail-on",
+            "P0",
+        ]
     )
     assert code == 1  # py detector ran (CLI won), found MD5
 
@@ -141,8 +152,8 @@ def test_cnsa1_permits_ecc_but_flags_chacha(tmp_path):
     )
     cbom = scan(repo, all_detectors())
     names = {v.finding.asset.algorithm for v in CNSA1.evaluate(cbom.sorted_findings())}
-    assert "ECDSA" not in names     # CNSA 1.0 permits ECC
-    assert "CHACHA20" in names      # but not ChaCha20
+    assert "ECDSA" not in names  # CNSA 1.0 permits ECC
+    assert "CHACHA20" in names  # but not ChaCha20
 
 
 def test_fips140_flags_md5_permits_aes128(tmp_path):
@@ -157,8 +168,8 @@ def test_fips140_flags_md5_permits_aes128(tmp_path):
     )
     cbom = scan(repo, all_detectors())
     names = {v.finding.asset.algorithm for v in FIPS140.evaluate(cbom.sorted_findings())}
-    assert "MD5" in names           # not FIPS-approved
-    assert "AES-128" not in names   # AES-128 is approved
+    assert "MD5" in names  # not FIPS-approved
+    assert "AES-128" not in names  # AES-128 is approved
 
 
 def test_new_policies_registered():
@@ -172,7 +183,6 @@ def test_policy_cli_accepts_new_packs(tmp_path):
     out = tmp_path / "rep"
     for pack in ("cnsa1", "fips140"):
         code = main(
-            ["scan", str(repo), "--format", "cbom", "--out", str(out),
-             "--policy", pack, "--quiet"]
+            ["scan", str(repo), "--format", "cbom", "--out", str(out), "--policy", pack, "--quiet"]
         )
         assert code == 1  # MD5 is outside every pack

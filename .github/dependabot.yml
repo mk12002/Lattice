@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Dev/CI Python tooling only — Lattice has zero runtime dependencies by design,
+  # so this keeps the `[dev]` extra (pytest, ruff, mypy, bandit, pip-audit) current.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "ci"]

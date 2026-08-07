@@ -84,9 +84,7 @@ def test_go_fixture():
         ]
     )
     assert _classified(GoDetector(), "go/main.go") == expected
-    assert all(
-        a.confidence == Confidence.HIGH for a in _detect(GoDetector(), "go/main.go")
-    )
+    assert all(a.confidence == Confidence.HIGH for a in _detect(GoDetector(), "go/main.go"))
 
 
 def test_c_cpp_fixture():
