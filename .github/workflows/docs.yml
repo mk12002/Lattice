@@ -19,6 +19,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # Enables GitHub Pages for the repo if it isn't already, and sets the
+      # source to "GitHub Actions". Without this (or a manual Settings->Pages
+      # change) the deploy job 404s. Requires the `pages: write` permission below.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Install docs tooling
         run: pip install -e ".[docs]"
       - name: Build site
