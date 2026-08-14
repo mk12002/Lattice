@@ -34,7 +34,7 @@ dev = [
     # unpinned ruff makes CI's format check drift from local runs (e.g. newer
     # ruff reformats Python code fences inside Markdown). Pinning keeps CI
     # reproducible and matching developer machines.
-    "ruff>=0.15.21,<0.16",
+    "ruff>=0.15.21,<0.17",
     "mypy>=1.8",
     "bandit>=1.7",
     "pip-audit>=2.7",
