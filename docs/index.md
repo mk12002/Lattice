@@ -28,6 +28,12 @@ lattice scan . --format all --fail-on P0
 lattice rules list                     # the full algorithm knowledge base
 ```
 
+## See it
+
+- **[Live sample report](sample-report.html)** — a real Lattice HTML report (light + dark, self-contained).
+- **[Terminal demo](demo.cast)** — an asciinema recording of a scan (`asciinema play`).
+- **[Benchmarks](https://github.com/mk12002/Lattice/tree/main/benchmarks)** — reproducible measurements.
+
 ## Where to next
 
 - **[Explained simply](PROJECT_EXPLAINED.md)** — a ten-minute, no-prerequisites walkthrough.

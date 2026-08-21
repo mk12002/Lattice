@@ -47,7 +47,11 @@ nav:
   - Comparison to other tools: COMPARISON.md
   - Accuracy & benchmarks: ACCURACY_NOTES.md
   - Threat model: THREAT_MODEL.md
+  - Ecosystem & community: COMMUNITY.md
   - Gaps & roadmap: GAPS.md
+  - Releasing & DOI:
+      - Releasing: RELEASING.md
+      - Getting a DOI (Zenodo): ZENODO.md
 
 # Note: CHANGELOG.md and CONTRIBUTING.md live at the repo root (GitHub convention)
 # and are linked from the Home page rather than duplicated into the docs tree.

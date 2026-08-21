@@ -11,6 +11,16 @@ post-quantum standards.
 ![Tests](https://img.shields.io/badge/tests-171-2d7a46)
 ![Security: Bandit](https://img.shields.io/badge/security-bandit%20clean-2d7a46)
 ![Languages: 12](https://img.shields.io/badge/detectors-12%20languages-8fb4d9)
+<!-- DOI: after archiving the first GitHub release on Zenodo (see docs/ZENODO.md),
+     replace ZENODO_ID below and uncomment:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.ZENODO_ID.svg)](https://doi.org/10.5281/zenodo.ZENODO_ID) -->
+<!-- CI (after first push):
+[![ci](https://github.com/mk12002/Lattice/actions/workflows/ci.yml/badge.svg)](https://github.com/mk12002/Lattice/actions/workflows/ci.yml) -->
+
+> **Try it in 30 seconds:** `git clone https://github.com/mk12002/Lattice && cd Lattice && pip install . && lattice scan .`
+> — see a [sample report](docs/images/report-light.png) (live version served on the
+> [docs site](https://mk12002.github.io/Lattice/)), replay the
+> [terminal demo](docs/demo.cast), or run the [benchmark harness](benchmarks/).
 
 *New here? Start with the plain-language walkthrough:
 [docs/PROJECT_EXPLAINED.md](docs/PROJECT_EXPLAINED.md).*
@@ -18,6 +28,8 @@ post-quantum standards.
 <p align="center">
   <img src="docs/images/terminal-scan.svg" alt="lattice scan run: 15 findings, P0=5, readiness 56/100, fail-on P0 exits 1" width="760">
 </p>
+
+<sub>Animated version: [`docs/demo.cast`](docs/demo.cast) — `asciinema play docs/demo.cast`, or upload it to asciinema.org. Regenerate with `python scripts/make_demo_cast.py`.</sub>
 
 ![How a scan works](docs/images/lattice-architecture.svg)
 
@@ -324,6 +336,10 @@ If you use Lattice in research or tooling, please cite it via [CITATION.cff](CIT
 
 > Lattice contributors. *Lattice: a crypto-agility and post-quantum-readiness scanner.*
 > https://github.com/mk12002/Lattice
+
+For a permanent, citable **DOI**, archive a release on Zenodo — the exact steps are in
+[docs/ZENODO.md](docs/ZENODO.md). How Lattice relates to the CycloneDX / PQCA / NIST
+post-quantum ecosystem (and how to engage) is in [docs/COMMUNITY.md](docs/COMMUNITY.md).
 
 ## License
 
